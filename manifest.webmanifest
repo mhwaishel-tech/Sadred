@@ -1,0 +1,12 @@
+{
+  "name": "SadRed",
+  "short_name": "SadRed",
+  "description": "Geef spullen een tweede leven",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbfcfa",
+  "theme_color": "#155e4b",
+  "icons": [
+    { "src": "/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
