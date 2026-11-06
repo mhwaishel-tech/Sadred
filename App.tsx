@@ -349,18 +349,34 @@ export default function App() {
               return (
                 <article className="listing-card" key={item.id}>
                   <div className="listing-image">
-                    {imageUrls && imageUrls.length > 0 ? (
-                      <img
-                        src={imageUrls[0]}
-                        alt={item.title}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover"
-                        }}
-                      />
-                    ) : (
-                      <Recycle size={38} />
+                   {imageUrls && imageUrls.length > 0 ? (
+  <div
+    style={{
+      display: "flex",
+      width: "100%",
+      height: "100%",
+      overflowX: "auto",
+      scrollSnapType: "x mandatory"
+    }}
+  >
+    {imageUrls.map((url, index) => (
+      <img
+        key={index}
+        src={url}
+        alt={`${item.title} ${index + 1}`}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          flex: "0 0 100%",
+          scrollSnapAlign: "start"
+        }}
+      />
+    ))}
+  </div>
+) : (
+  <Recycle size={38} />
+)} <Recycle size={38} />
                     )}
 
                     <span>{item.category}</span>
