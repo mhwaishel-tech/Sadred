@@ -376,7 +376,7 @@ export default function App() {
   </div>
 ) : (
   <Recycle size={38} />
-
+)}
                     <span>{item.category}</span>
                   </div>
 
