@@ -19,7 +19,7 @@ export default function App() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
   const [notice, setNotice] = useState("");
-
+const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   useEffect(() => {
     if (!supabase) return;
     supabase.auth.getSession().then(({ data }) => setUserEmail(data.session?.user.email ?? null));
