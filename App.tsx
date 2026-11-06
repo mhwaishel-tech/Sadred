@@ -46,7 +46,7 @@ const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     setNotice(error ? error.message : "Account aangemaakt. Controleer indien nodig je e-mail.");
   }
   async function signOut() { await supabase?.auth.signOut(); }
-  async function addListing(form: FormData) {
+  {
     const item = {
       title: String(form.get("title") || "").trim(),
       description: String(form.get("description") || "").trim(),
@@ -75,7 +75,7 @@ const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     <main>
       <section className="hero"><div className="hero-copy"><div className="eyebrow">DUURZAAM • LOKAAL • EENVOUDIG</div><h1>Geef spullen een<br/><em>tweede leven.</em></h1><p>Wil je iets laten ophalen? Plaats gratis een oproep en bepaal zelf welke vergoeding je geeft aan iemand die het komt ophalen.</p><button className="primary" onClick={() => setShowForm(true)}><Plus size={18}/> Plaats een oproep</button></div><div className="hero-art"><div className="art-circle"><Recycle size={104}/></div><div className="floating-card"><span>♻️</span><div><b>Goed voor elkaar.</b><small>Spullen krijgen een nieuw thuis.</small></div></div></div></section>
 
-      <section className="stats"><div><b>Geef weg</b><span>Wat jij niet meer nodig hebt</span></div><div><b>Ontvang hulp</b><span>Iemand haalt het voor je op</span></div><div><b>Bepaal zelf</b><span>De eventuele vergoeding</span></div></section>
+      <section className="stats"><div><b>Geeasync function addListing(form: FormData) f weg</b><span>Wat jij niet meer nodig hebt</span></div><div><b>Ontvang hulp</b><span>Iemand haalt het voor je op</span></div><div><b>Bepaal zelf</b><span>De eventuele vergoeding</span></div></section>
 
       <section id="aanbod" className="listings-section"><div className="section-heading"><div><div className="eyebrow">ONTDEK IN JOUW BUURT</div><h2>Oproepen in de buurt</h2></div><span className="result-count">{filtered.length} oproepen</span></div>
         <div className="filters"><div className="search"><Search size={19}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Zoek op voorwerp of gemeente..."/></div><select value={category} onChange={e => setCategory(e.target.value)}><option>Alles</option><option>Meubels</option><option>Elektronica</option><option>Tuin</option><option>Andere</option></select></div>
