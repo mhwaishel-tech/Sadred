@@ -1,30 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
 
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { error: string | null }
-> {
-  state = { error: null as string | null };
+const root = ReactDOM.createRoot(document.getElementById("root")!);
 
-  static getDerivedStateFromError(error: Error) {
-    return { error: error.message || String(error) };
-  }
-
-  render() {
-    if (this.state.error) {
-      return <div style={{ color: "red", padding: 20 }}>
-        <h2>SadRed Error</h2>
-        {this.state.error}
-      </div>;
-    }
-    return this.props.children;
-  }
-}
-
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <ErrorBoundary>
-    <App />
-  </ErrorBoundary>
+root.render(
+  <div style={{ padding: 20, fontSize: 20 }}>
+    جاري تحميل SadRed...
+  </div>
 );
+
+import("./App")
+  .then(({ default: App }) => {
+    root.render(<App />);
+  })
+  .catch((error) => {
+    root.render(
+      <div style={{ padding: 20, color: "red", whiteSpace: "pre-wrap" }}>
+        <h2>SadRed – خطأ في التحميل</h2>
+        {String(error?.stack || error)}
+      </div>
+    );
+  });
