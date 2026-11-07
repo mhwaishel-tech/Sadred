@@ -1,23 +1,46 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { error: string | null }
+> {
+  state = { error: null as string | null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error: error.stack || error.message };
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <pre style={{ color: "red", padding: 20, whiteSpace: "pre-wrap" }}>
+          SADRED ERROR:
+          {"\n"}
+          {this.state.error}
+        </pre>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
-root.render(
-  <div style={{ padding: 20, fontSize: 20 }}>
-    جاري تحميل SadRed...
-  </div>
-);
+root.render(<div style={{ padding: 20 }}>جاري تحميل SadRed...</div>);
 
 import("./App")
   .then(({ default: App }) => {
-    root.render(<App />);
+    root.render(
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    );
   })
   .catch((error) => {
     root.render(
-      <div style={{ padding: 20, color: "red", whiteSpace: "pre-wrap" }}>
-        <h2>SadRed – خطأ في التحميل</h2>
+      <pre style={{ color: "red", padding: 20, whiteSpace: "pre-wrap" }}>
         {String(error?.stack || error)}
-      </div>
+      </pre>
     );
   });
