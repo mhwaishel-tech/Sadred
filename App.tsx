@@ -1,5 +1,4 @@
-
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Search,
   Plus,
@@ -8,618 +7,630 @@ import {
   Recycle,
   LogIn,
   LogOut,
-  X
+  X,
+  Send,
+  Check,
+  Clock,
+  MessageCircle,
+  Star,
+  Package,
+  User,
 } from "lucide-react";
+import { supabase, isSupabaseConfigured } from "./supabase";
 
-import { isSupabaseConfigured, supabase } from "./supabase";
-import type { Listing } from "./types";
+type Listing = {
+  id: string;
+  user_id: string;
+  title: string;
+  description: string;
+  category: string;
+  city: string;
+  reward_eur: number;
+  image_urls?: string[] | null;
+  status: string;
+  created_at: string;
+};
 
-const demoListings: Listing[] = [
-  {
-    id: "demo-1",
-    title: "Oude zetel ophalen",
-    description: "Grijze zetel, nog bruikbaar. Zelf ophalen op gelijkvloers.",
-    category: "Meubels",
-    city: "Antwerpen",
-    reward_eur: 15,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: "demo-2",
-    title: "Houten kast meenemen",
-    description: "Stevige kast. Gratis mee te nemen.",
-    category: "Meubels",
-    city: "Merksem",
-    reward_eur: 10,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: "demo-3",
-    title: "Tuinmateriaal ophalen",
-    description: "Enkele spullen die weg mogen.",
-    category: "Tuin",
-    city: "Deurne",
-    reward_eur: 5,
-    created_at: new Date().toISOString()
-  }
+type Offer = {
+  id: string;
+  listing_id: string;
+  user_id: string;
+  amount: number;
+  message: string;
+  status: string;
+};
+
+type Profile = {
+  user_id: string;
+  display_name: string | null;
+  city: string | null;
+  role: string;
+};
+
+type ChatMessage = {
+  id: string;
+  listing_id: string;
+  sender_id: string;
+  receiver_id: string;
+  body: string;
+  created_at: string;
+};
+
+const categories = [
+  "Verhuizen",
+  "Meubels ophalen",
+  "Opruimen",
+  "Tuinonderhoud",
+  "Afval wegbrengen",
+  "Andere klus",
 ];
 
 export default function App() {
-  const [listings, setListings] = useState<Listing[]>(demoListings);
-  const [query, setQuery] = useState("");
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [offers, setOffers] = useState<Offer[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Alles");
-  const [showForm, setShowForm] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
+  const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+  const [showOffer, setShowOffer] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [authOpen, setAuthOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [isSignup, setIsSignup] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [city, setCity] = useState("");
+  const [reward, setReward] = useState("");
+  const [newCategory, setNewCategory] = useState(categories[0]);
+  const [offerAmount, setOfferAmount] = useState("");
+  const [offerMessage, setOfferMessage] = useState("");
+  const [chatText, setChatText] = useState("");
   const [notice, setNotice] = useState("");
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   useEffect(() => {
-    if (!supabase) return;
+    if (!supabase) {
+      setLoading(false);
+      setNotice("Supabase is nog niet ingesteld.");
+      return;
+    }
 
     supabase.auth.getSession().then(({ data }) => {
-      setUserEmail(data.session?.user.email ?? null);
+      setUser(data.session?.user ?? null);
     });
 
-    const { data } = supabase.auth.onAuthStateChange(
+    const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setUserEmail(session?.user.email ?? null);
+        setUser(session?.user ?? null);
       }
     );
 
-    supabase
-      .from("listings")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .then(({ data: rows, error }) => {
-        if (!error && rows) {
-          setListings(rows as Listing[]);
-        }
-      });
-
-    return () => data.subscription.unsubscribe();
+    return () => listener.subscription.unsubscribe();
   }, []);
 
-  const filtered = useMemo(
-    () =>
-      listings.filter((item) => {
-        const text =
-          `${item.title} ${item.description} ${item.city}`.toLowerCase();
+  useEffect(() => {
+    loadData();
+  }, [user]);
 
-        return (
-          text.includes(query.toLowerCase()) &&
-          (category === "Alles" || item.category === category)
-        );
-      }),
-    [listings, query, category]
-  );
+  async function loadData() {
+    if (!supabase) return;
 
-  async function signIn() {
-    if (!supabase) {
-      setNotice("Koppel eerst Supabase via het .env-bestand.");
-      return;
+    setLoading(true);
+
+    const { data: listingData, error } = await supabase
+      .from("listings")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      setNotice("Kon de opdrachten niet laden.");
+    } else {
+      setListings((listingData ?? []) as Listing[]);
     }
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
+    if (user) {
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
 
-    setNotice(error ? error.message : "Je bent ingelogd.");
-    if (!error) setAuthOpen(false);
+      setProfile(profileData as Profile | null);
+
+      const { data: offerData } = await supabase
+        .from("offers")
+        .select("*");
+
+      setOffers((offerData ?? []) as Offer[]);
+
+      const { data: messageData } = await supabase
+        .from("messages")
+        .select("*")
+        .order("created_at", { ascending: true });
+
+      setMessages((messageData ?? []) as ChatMessage[]);
+    } else {
+      setProfile(null);
+      setOffers([]);
+      setMessages([]);
+    }
+
+    setLoading(false);
   }
+    async function handleAuth() {
+    if (!supabase) return;
 
-  async function signUp() {
-    if (!supabase) {
-      setNotice("Koppel eerst Supabase via het .env-bestand.");
-      return;
-    }
+    if (isSignup) {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password
-    });
-
-    setNotice(
-      error
-        ? error.message
-        : "Account aangemaakt. Controleer indien nodig je e-mail."
-    );
-  }
-
-  async function signOut() {
-    await supabase?.auth.signOut();
-  }
-
-  async function addListing(form: FormData) {
-    const item = {
-      title: String(form.get("title") || "").trim(),
-      description: String(form.get("description") || "").trim(),
-      category: String(form.get("category") || "Andere"),
-      city: String(form.get("city") || "").trim(),
-      reward_eur: Number(form.get("reward") || 0)
-    };
-
-    if (!item.title || !item.city) {
-      setNotice("Vul minstens de titel en gemeente in.");
-      return;
-    }
-
-    if (!supabase) {
-      setNotice("Supabase is niet verbonden.");
-      return;
-    }
-
-    const { data: userData, error: userError } =
-      await supabase.auth.getUser();
-
-    const user = userData.user;
-
-    if (userError || !user) {
-      setNotice("Log eerst in om een advertentie te plaatsen.");
-      return;
-    }
-
-    const imageUrls: string[] = [];
-
-    for (let i = 0; i < selectedFiles.length; i++) {
-      const file = selectedFiles[i];
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
-      const path = `${user.id}/${Date.now()}-${i}-${safeName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("listing-images")
-        .upload(path, file);
-
-      if (uploadError) {
-        setNotice("Fout bij uploaden foto: " + uploadError.message);
+      if (error) {
+        setNotice(error.message);
         return;
       }
 
-      const { data: publicData } = supabase.storage
-        .from("listing-images")
-        .getPublicUrl(path);
+      if (data.user) {
+        await supabase.from("profiles").upsert({
+          user_id: data.user.id,
+          display_name: name,
+          role: "both",
+        });
+      }
 
-      imageUrls.push(publicData.publicUrl);
+      setNotice("Account aangemaakt. Controleer je e-mail indien nodig.");
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        setNotice(error.message);
+        return;
+      }
     }
 
-    const { data, error } = await supabase
-      .from("listings")
-      .insert({
-        ...item,
-        user_id: user.id,
-        image_urls: imageUrls
-      })
-      .select()
-      .single();
+    setShowLogin(false);
+    setEmail("");
+    setPassword("");
+    setName("");
+  }
+
+  async function handleLogout() {
+    if (!supabase) return;
+
+    await supabase.auth.signOut();
+    setNotice("Je bent uitgelogd.");
+  }
+
+  async function createListing() {
+    if (!supabase || !user) {
+      setShowLogin(true);
+      return;
+    }
+
+    if (!title.trim() || !city.trim() || !reward) {
+      setNotice("Vul alle verplichte velden in.");
+      return;
+    }
+
+    const { error } = await supabase.from("listings").insert({
+      user_id: user.id,
+      title: title.trim(),
+      description: description.trim(),
+      category: newCategory,
+      city: city.trim(),
+      reward_eur: Number(reward),
+      status: "active",
+    });
 
     if (error) {
       setNotice(error.message);
       return;
     }
 
-    setListings((current) => [data as Listing, ...current]);
-    setSelectedFiles([]);
-    setShowForm(false);
-    setNotice("Je advertentie is succesvol geplaatst.");
+    setTitle("");
+    setDescription("");
+    setCity("");
+    setReward("");
+    setShowCreate(false);
+    setNotice("Je opdracht is geplaatst.");
+    await loadData();
   }
 
-  return (
-    <div className="app">
-      <header className="topbar">
-        <a className="brand" href="#">
-          <span className="brand-mark">
-            <Recycle size={22} />
-          </span>
-          <span>Sad<span>Red</span></span>
+  async function submitOffer() {
+    if (!supabase || !user || !selectedListing) {
+      setShowLogin(true);
+      return;
+    }
+
+    if (!offerAmount || Number(offerAmount) < 0) {
+      setNotice("Vul een geldig bedrag in.");
+      return;
+    }
+
+    const { error } = await supabase.from("offers").insert({
+      listing_id: selectedListing.id,
+      user_id: user.id,
+      amount: Number(offerAmount),
+      message: offerMessage.trim(),
+      status: "pending",
+    });
+
+    if (error) {
+      setNotice(error.message);
+      return;
+    }
+
+    setOfferAmount("");
+    setOfferMessage("");
+    setShowOffer(false);
+    setNotice("Je aanbod is verstuurd.");
+    await loadData();
+  }
+
+  async function updateOfferStatus(
+    offer: Offer,
+    status: "accepted" | "rejected"
+  ) {
+    if (!supabase || !user) return;
+
+    const { error } = await supabase
+      .from("offers")
+      .update({ status })
+      .eq("id", offer.id);
+
+    if (error) {
+      setNotice("Het aanbod kon niet worden bijgewerkt. Controleer de RLS-rechten.");
+      return;
+    }
+
+    setNotice(
+      status === "accepted"
+        ? "Aanbod geaccepteerd."
+        : "Aanbod afgewezen."
+    );
+
+    await loadData();
+  }
+
+  async function sendMessage() {
+    if (!supabase || !user || !selectedListing || !chatText.trim()) {
+      return;
+    }
+
+    const acceptedOffer = offers.find(
+      (offer) =>
+        offer.listing_id === selectedListing.id &&
+        offer.status === "accepted"
+    );
+
+    if (!acceptedOffer) {
+      setNotice("Er is nog geen geaccepteerd aanbod.");
+      return;
+    }
+
+    const receiverId =
+      user.id === selectedListing.user_id
+        ? acceptedOffer.user_id
+        : selectedListing.user_id;
+
+    const { error } = await supabase.from("messages").insert({
+      listing_id: selectedListing.id,
+      sender_id: user.id,
+      receiver_id: receiverId,
+      body: chatText.trim(),
+    });
+
+    if (error) {
+      setNotice("Bericht verzenden mislukt.");
+      return;
+    }
+
+    setChatText("");
+    await loadData();
+  }
+
+  const filteredListings = listings.filter((listing) => {
+    const matchesSearch =
+      listing.title.toLowerCase().includes(search.toLowerCase()) ||
+      listing.city.toLowerCase().includes(search.toLowerCase()) ||
+      listing.description.toLowerCase().includes(search.toLowerCase());
+
+    const matchesCategory =
+      category === "Alles" || listing.category === category;
+
+    return (
+      matchesSearch &&
+      matchesCategory &&
+      listing.status === "active"
+    );
+  });
+
+  function openListing(listing: Listing) {
+    setSelectedListing(listing);
+    setShowOffer(false);
+    setShowChat(false);
+  }
+
+  function closeDetails() {
+    setSelectedListing(null);
+    setShowOffer(false);
+    setShowChat(false);
+  }
+    return (
+    <main className="app">
+      <header className="header">
+        <a href="#" className="logo">
+          <Recycle size={28} />
+          <span>Sad Rad</span>
         </a>
 
         <nav>
-          <a href="#aanbod">Aanbod</a>
+          <a href="#opdrachten">Opdrachten</a>
           <a href="#hoe-werkt-het">Hoe werkt het?</a>
         </nav>
 
-        <div className="actions">
-          {userEmail ? (
-            <>
-              <span className="user">{userEmail}</span>
-              <button
-                className="icon-button"
-                onClick={signOut}
-                aria-label="Uitloggen"
-              >
-                <LogOut size={18} />
-              </button>
-            </>
+        <div className="header-actions">
+          {user ? (
+            <button onClick={handleLogout} className="secondary-btn">
+              <LogOut size={17} /> Uitloggen
+            </button>
           ) : (
             <button
-              className="login"
-              onClick={() => setAuthOpen(true)}
+              onClick={() => setShowLogin(true)}
+              className="secondary-btn"
             >
               <LogIn size={17} /> Inloggen
             </button>
           )}
 
           <button
-            className="primary small"
-            onClick={() => setShowForm(true)}
+            onClick={() => (user ? setShowCreate(true) : setShowLogin(true))}
+            className="primary-btn"
           >
-            <Plus size={17} /> Plaats oproep
+            <Plus size={17} /> Opdracht plaatsen
           </button>
         </div>
       </header>
 
-      <main>
-        <section className="hero">
-          <div className="hero-copy">
-            <div className="eyebrow">
-              DUURZAAM • LOKAAL • EENVOUDIG
-            </div>
-
-            <h1>
-              Geef spullen een
-              <br />
-              <em>tweede leven.</em>
-            </h1>
-
-            <p>
-              Wil je iets laten ophalen? Plaats gratis een oproep en
-              bepaal zelf welke vergoeding je geeft aan iemand die het
-              komt ophalen.
-            </p>
-
-            <button
-              className="primary"
-              onClick={() => setShowForm(true)}
-            >
-              <Plus size={18} /> Plaats een oproep
-            </button>
-          </div>
-
-          <div className="hero-art">
-            <div className="art-circle">
-              <Recycle size={104} />
-            </div>
-
-            <div className="floating-card">
-              <span>♻️</span>
-              <div>
-                <b>Goed voor elkaar.</b>
-                <small>Spullen krijgen een nieuw thuis.</small>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="stats">
-          <div>
-            <b>Geef spullen een tweede leven</b>
-            <span>Wat jij niet meer nodig hebt</span>
-          </div>
-          <div>
-            <b>Ontvang hulp</b>
-            <span>Iemand haalt het voor je op</span>
-          </div>
-          <div>
-            <b>Bepaal zelf</b>
-            <span>De eventuele vergoeding</span>
-          </div>
-        </section>
-
-        <section id="aanbod" className="listings-section">
-          <div className="section-heading">
-            <div>
-              <div className="eyebrow">ONTDEK IN JOUW BUURT</div>
-              <h2>Oproepen in de buurt</h2>
-            </div>
-            <span className="result-count">
-              {filtered.length} oproepen
-            </span>
-          </div>
-
-          <div className="filters">
-            <div className="search">
-              <Search size={19} />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Zoek op voorwerp of gemeente..."
-              />
-            </div>
-
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option>Alles</option>
-              <option>Meubels</option>
-              <option>Elektronica</option>
-              <option>Tuin</option>
-              <option>Andere</option>
-            </select>
-          </div>
-
-          <div className="cards">
-            {filtered.map((item) => {
-              const imageUrls =
-                (item as Listing & { image_urls?: string[] }).image_urls;
-
-              return (
-                <article className="listing-card" key={item.id}>
-                  <div className="listing-image">
-                   {imageUrls && imageUrls.length > 0 ? (
-  <div
-    style={{
-      display: "flex",
-      width: "100%",
-      height: "100%",
-      overflowX: "auto",
-      scrollSnapType: "x mandatory"
-    }}
-  >
-    {imageUrls.map((url, index) => (
-      <img
-        key={index}
-        src={url}
-        alt={`${item.title} ${index + 1}`}
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          flex: "0 0 100%",
-          scrollSnapAlign: "start"
-        }}
-      />
-    ))}
-  </div>
-) : (
-  <Recycle size={38} />
-)}
-                    <span>{item.category}</span>
-                  </div>
-
-                  <div className="listing-body">
-                    <h3>{item.title}</h3>
-                    <p>{item.description}</p>
-
-                    <div className="listing-meta">
-                      <span>
-                        <MapPin size={15} />
-                        {item.city}
-                      </span>
-
-                      <strong>
-                        <Euro size={15} />
-                        {item.reward_eur} vergoeding
-                      </strong>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-
-          {filtered.length === 0 && (
-            <div className="empty">
-              Geen oproepen gevonden. Pas je zoekopdracht aan.
-            </div>
-          )}
-        </section>
-
-        <section id="hoe-werkt-het" className="how">
-          <div>
-            <div className="eyebrow">ZO WERKT SADRED</div>
-            <h2>
-              Weg ermee?
-              <br />
-              <em>Regel het samen.</em>
-            </h2>
-          </div>
-
-          <div className="steps">
-            <div>
-              <b>01</b>
-              <h3>Plaats je oproep</h3>
-              <p>Vertel wat opgehaald moet worden en waar.</p>
-            </div>
-
-            <div>
-              <b>02</b>
-              <h3>Ontvang reacties</h3>
-              <p>Geïnteresseerden nemen contact met je op.</p>
-            </div>
-
-            <div>
-              <b>03</b>
-              <h3>Maak afspraken</h3>
-              <p>Spreek samen een geschikt ophaalmoment af.</p>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer>
-        <a className="brand" href="#">
-          <span className="brand-mark">
-            <Recycle size={20} />
-          </span>
-          <span>Sad<span>Red</span></span>
-        </a>
-
-        <small>
-          © {new Date().getFullYear()} SadRed. Samen geven we spullen
-          een tweede leven.
-        </small>
-      </footer>
-
-      {showForm && (
-        <div
-          className="overlay"
-          onClick={() => setShowForm(false)}
-        >
-          <form
-            className="modal"
-            onSubmit={(e) => {
-              e.preventDefault();
-              void addListing(new FormData(e.currentTarget));
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              className="close"
-              onClick={() => setShowForm(false)}
-            >
-              <X />
-            </button>
-
-            <h2>Plaats een oproep</h2>
-            <p>Vertel wat je wilt laten ophalen.</p>
-
-            <label>
-              Titel
-              <input
-                name="title"
-                required
-                placeholder="Bijv. Oude zetel ophalen"
-              />
-            </label>
-
-            <label>
-              Beschrijving
-              <textarea
-                name="description"
-                rows={3}
-                placeholder="Geef wat extra informatie..."
-              />
-            </label>
-
-            <div className="two">
-              <label>
-                Categorie
-                <select name="category">
-                  <option>Meubels</option>
-                  <option>Elektronica</option>
-                  <option>Tuin</option>
-                  <option>Andere</option>
-                </select>
-              </label>
-
-              <label>
-                Gemeente
-                <input
-                  name="city"
-                  required
-                  placeholder="Antwerpen"
-                />
-              </label>
-            </div>
-
-            <label>
-              Vergoeding (€)
-              <input
-                name="reward"
-                type="number"
-                min="0"
-                defaultValue="0"
-              />
-            </label>
-
-            <label>
-              Foto's toevoegen
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={(e) =>
-                  setSelectedFiles(
-                    Array.from(e.target.files || [])
-                  )
-                }
-              />
-            </label>
-
-            <button className="primary full" type="submit">
-              Oproep toevoegen
-            </button>
-          </form>
-        </div>
-      )}
-
-      {authOpen && (
-        <div
-          className="overlay"
-          onClick={() => setAuthOpen(false)}
-        >
-          <div
-            className="modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="close"
-              onClick={() => setAuthOpen(false)}
-            >
-              <X />
-            </button>
-
-            <h2>Welkom bij SadRed</h2>
-            <p>Log in of maak een account aan.</p>
-
-            <label>
-              E-mailadres
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="jij@voorbeeld.be"
-              />
-            </label>
-
-            <label>
-              Wachtwoord
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Minstens 6 tekens"
-              />
-            </label>
-
-            <button
-              className="primary full"
-              onClick={() => void signIn()}
-            >
-              Inloggen
-            </button>
-
-            <button
-              className="secondary full"
-              onClick={() => void signUp()}
-            >
-              Account aanmaken
-            </button>
-          </div>
-        </div>
-      )}
-
       {notice && (
-        <button
-          className="notice"
-          onClick={() => setNotice("")}
-        >
-          {notice}　×
-        </button>
-      )}
-
-      {!isSupabaseConfigured && (
-        <div className="setup-note">
-          Demo-modus: voeg je Supabase-gegevens toe in{" "}
-          <code>.env</code> om online accounts en advertenties te
-          activeren.
+        <div className="notice">
+          {notice}
+          <button onClick={() => setNotice("")}>
+            <X size={16} />
+          </button>
         </div>
       )}
-    </div>
+
+      <section className="hero">
+        <div className="hero-content">
+          <div className="eyebrow">SAMEN MAKEN WE RUIMTE</div>
+          <h1>Een klus gedaan.<br />Een ander geholpen.</h1>
+          <p>
+            Plaats je klus, ontvang aanbiedingen en vind iemand die je kan
+            helpen.
+          </p>
+          <button
+            className="primary-btn"
+            onClick={() => (user ? setShowCreate(true) : setShowLogin(true))}
+          >
+            Plaats een opdracht <Plus size={18} />
+          </button>
+        </div>
+        <div className="hero-icon">
+          <Recycle size={100} />
+        </div>
+      </section>
+
+      <section id="opdrachten" className="listings-section">
+        <div className="section-heading">
+          <div>
+            <div className="eyebrow">ONTDEK OPDRACHTEN</div>
+            <h2>Wie kan jou helpen?</h2>
+          </div>
+          <span>{filteredListings.length} opdrachten</span>
+        </div>
+
+        <div className="search-bar">
+          <Search size={20} />
+          <input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Zoek op opdracht of stad..."
+          />
+        </div>
+
+        <div className="categories">
+          {["Alles", ...categories].map((item) => (
+            <button
+              key={item}
+              className={category === item ? "category active" : "category"}
+              onClick={() => setCategory(item)}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+
+        {loading ? (
+          <p className="empty-state">Laden...</p>
+        ) : filteredListings.length === 0 ? (
+          <div className="empty-state">
+            <Package size={40} />
+            <h3>Nog geen opdrachten gevonden</h3>
+            <p>Probeer een andere zoekopdracht of plaats zelf een klus.</p>
+          </div>
+        ) : (
+          <div className="listing-grid">
+            {filteredListings.map((listing) => (
+              <article className="listing-card" key={listing.id}>
+                <div className="listing-card-content">
+                  <span className="listing-category">{listing.category}</span>
+                  <h3>{listing.title}</h3>
+                  <p>{listing.description}</p>
+                  <div className="listing-meta">
+                    <span><MapPin size={15} /> {listing.city}</span>
+                    <strong><Euro size={15} /> {listing.reward_eur}</strong>
+                  </div>
+                  <button
+                    className="primary-btn full-btn"
+                    onClick={() => openListing(listing)}
+                  >
+                    Bekijk opdracht
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section id="hoe-werkt-het" className="how">
+        <div className="eyebrow">ZO WERKT SAD RAD</div>
+        <h2>Hulp vragen of aanbieden.<br />Het begint hier.</h2>
+        <div className="how-grid">
+          <div><Plus size={28} /><h3>1. Plaats een klus</h3><p>Vertel wat je nodig hebt en wat je ervoor betaalt.</p></div>
+          <div><Send size={28} /><h3>2. Ontvang aanbiedingen</h3><p>Ontvang reacties van mensen die je willen helpen.</p></div>
+          <div><Check size={28} /><h3>3. Kies en spreek af</h3><p>Kies een aanbieder en bespreek de details.</p></div>
+        </div>
+      </section>
+
+      {selectedListing && (
+        <div className="modal-backdrop" onClick={closeDetails}>
+          <div className="modal" onClick={(event) => event.stopPropagation()}>
+            <button className="close-btn" onClick={closeDetails}><X /></button>
+            <span className="listing-category">{selectedListing.category}</span>
+            <h2>{selectedListing.title}</h2>
+            <p>{selectedListing.description}</p>
+            <p><MapPin size={16} /> {selectedListing.city}</p>
+            <h3>€ {selectedListing.reward_eur}</h3>
+
+            {user && selectedListing.user_id === user.id ? (
+              <div>
+                <h3>Ontvangen aanbiedingen</h3>
+                {offers.filter((offer) => offer.listing_id === selectedListing.id).length === 0 ? (
+                  <p>Nog geen aanbiedingen.</p>
+                ) : (
+                  offers
+                    .filter((offer) => offer.listing_id === selectedListing.id)
+                    .map((offer) => (
+                      <div className="offer-card" key={offer.id}>
+                        <strong>€ {offer.amount}</strong>
+                        <p>{offer.message}</p>
+                        <span>{offer.status}</span>
+                        {offer.status === "pending" && (
+                          <div className="modal-actions">
+                            <button className="primary-btn" onClick={() => updateOfferStatus(offer, "accepted")}>
+                              <Check size={16} /> Accepteren
+                            </button>
+                            <button className="secondary-btn" onClick={() => updateOfferStatus(offer, "rejected")}>
+                              Afwijzen
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))
+                )}
+              </div>
+            ) : (
+              <button className="primary-btn full-btn" onClick={() => {
+                if (!user) setShowLogin(true);
+                else setShowOffer(true);
+              }}>
+                Bied aan
+              </button>
+            )}
+
+            {showOffer && (
+              <div className="form-fields">
+                <h3>Jouw aanbod</h3>
+                <label>Bedrag in euro</label>
+                <input type="number" value={offerAmount} onChange={(event) => setOfferAmount(event.target.value)} />
+                <label>Bericht</label>
+                <textarea value={offerMessage} onChange={(event) => setOfferMessage(event.target.value)} />
+                <button className="primary-btn full-btn" onClick={submitOffer}>Aanbod versturen</button>
+              </div>
+            )}
+
+            {user && offers.some((offer) => offer.listing_id === selectedListing.id && offer.status === "accepted") && (
+              <div className="chat-area">
+                <h3><MessageCircle size={18} /> Berichten</h3>
+                {messages.filter((message) => message.listing_id === selectedListing.id).map((message) => (
+                  <div className="chat-message" key={message.id}>
+                    <small>{message.sender_id === user.id ? "Jij" : "Andere gebruiker"}</small>
+                    <p>{message.body}</p>
+                  </div>
+                ))}
+                <textarea value={chatText} onChange={(event) => setChatText(event.target.value)} placeholder="Schrijf een bericht..." />
+                <button className="primary-btn full-btn" onClick={sendMessage}>
+                  <Send size={16} /> Verstuur
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {showLogin && (
+        <div className="modal-backdrop" onClick={() => setShowLogin(false)}>
+          <div className="modal" onClick={(event) => event.stopPropagation()}>
+            <button className="close-btn" onClick={() => setShowLogin(false)}><X /></button>
+            <h2>{isSignup ? "Account aanmaken" : "Welkom terug"}</h2>
+            {isSignup && (
+              <>
+                <label>Naam</label>
+                <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Je naam" />
+              </>
+            )}
+            <label>E-mailadres</label>
+            <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="naam@email.com" />
+            <label>Wachtwoord</label>
+            <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Wachtwoord" />
+            <button className="primary-btn full-btn" onClick={handleAuth}>
+              {isSignup ? "Registreren" : "Inloggen"}
+            </button>
+            <button className="text-btn" onClick={() => setIsSignup(!isSignup)}>
+              {isSignup ? "Ik heb al een account" : "Nog geen account? Registreren"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showCreate && (
+        <div className="modal-backdrop" onClick={() => setShowCreate(false)}>
+          <div className="modal" onClick={(event) => event.stopPropagation()}>
+            <button className="close-btn" onClick={() => setShowCreate(false)}><X /></button>
+            <h2>Nieuwe opdracht plaatsen</h2>
+            <label>Titel</label>
+            <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Wat moet er gebeuren?" />
+            <label>Beschrijving</label>
+            <textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Geef meer informatie..." />
+            <label>Categorie</label>
+            <select value={newCategory} onChange={(event) => setNewCategory(event.target.value)}>
+              {categories.map((item) => <option key={item}>{item}</option>)}
+            </select>
+            <label>Stad</label>
+            <input value={city} onChange={(event) => setCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
+            <label>Beloning in euro</label>
+            <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} placeholder="50" />
+            <button className="primary-btn full-btn" onClick={createListing}>Opdracht plaatsen</button>
+          </div>
+        </div>
+      )}
+
+      <footer className="footer">
+        <a href="#" className="logo"><Recycle size={22} /> Sad Rad</a>
+        <p>Geef spullen en hulp een tweede kans.</p>
+        <span>© {new Date().getFullYear()} Sad Rad</span>
+      </footer>
+    </main>
   );
 }
