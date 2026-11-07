@@ -1,6 +1,6 @@
 import { Component, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App";
+import "./styles.css";
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -32,8 +32,28 @@ if (!rootElement) {
   throw new Error('SadRed: element with id="root" was not found.');
 }
 
-createRoot(rootElement).render(
-  <ErrorBoundary>
-    <App />
-  </ErrorBoundary>
+const root = createRoot(rootElement);
+
+root.render(
+  <div style={{ padding: 20, font: "20px Arial", color: "green" }}>
+    SadRed wordt geladen...
+  </div>
 );
+
+import("./App")
+  .then(({ default: App }) => {
+    root.render(
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    );
+  })
+  .catch((error) => {
+    root.render(
+      <pre style={{ color: "red", padding: 20, whiteSpace: "pre-wrap" }}>
+        SADRED LOAD ERROR:
+        {"\n"}
+        {String(error?.stack || error)}
+      </pre>
+    );
+  });
