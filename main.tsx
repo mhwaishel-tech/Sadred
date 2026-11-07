@@ -1,8 +1,9 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+import { Component, type ReactNode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App";
 
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode },
+class ErrorBoundary extends Component<
+  { children: ReactNode },
   { error: string | null }
 > {
   state = { error: null as string | null };
@@ -25,22 +26,14 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-const root = ReactDOM.createRoot(document.getElementById("root")!);
+const rootElement = document.getElementById("root");
 
-root.render(<div style={{ padding: 20 }}>جاري تحميل SadRed...</div>);
+if (!rootElement) {
+  throw new Error('SadRed: element with id="root" was not found.');
+}
 
-import("./App")
-  .then(({ default: App }) => {
-    root.render(
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    );
-  })
-  .catch((error) => {
-    root.render(
-      <pre style={{ color: "red", padding: 20, whiteSpace: "pre-wrap" }}>
-        {String(error?.stack || error)}
-      </pre>
-    );
-  });
+createRoot(rootElement).render(
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>
+);
