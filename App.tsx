@@ -656,25 +656,19 @@ export default function App() {
   }}
 />
           </div>
-        </div>
+        <span>© {new Date().getFullYear()} Sad Rad</span>
+      </footer>
+    </main>
       )}<label>Foto's toevoegen (maximaal 5)</label>
 <input
   type="file"
-  accept="image/*"
-  multiple
-  onChange={(event) => {
-    setSelectedImages(Array.from(event.target.files ?? []).slice(0, 5));
-  }}
-/>
-<button className="primary-btn full-btn" onClick={createListing}>
+  
   Opdracht plaatsen
 </button>
 
       <footer className="footer">
         <a href="#" className="logo"><Recycle size={22} /> Sad Rad</a>
         <p>Geef spullen en hulp een tweede kans.</p>
-        <span>© {new Date().getFullYear()} Sad Rad</span>
-      </footer>
-    </main>
+        
   );
 }
