@@ -87,6 +87,7 @@ export default function App() {
   const [description, setDescription] = useState("");
   const [city, setCity] = useState("");
   const [reward, setReward] = useState("");
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [newCategory, setNewCategory] = useState(categories[0]);
   const [offerAmount, setOfferAmount] = useState("");
   const [offerMessage, setOfferMessage] = useState("");
