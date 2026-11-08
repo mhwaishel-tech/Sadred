@@ -229,7 +229,7 @@ export default function App() {
       const filePath = `${user.id}/${Date.now()}-${i}-${safeName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from("listing")
+        .from("listing-images")
         .upload(filePath, file);
 
       if (uploadError) {
@@ -238,7 +238,7 @@ export default function App() {
       }
 
       const { data } = supabase.storage
-        .from("listing")
+        .from("listing-images")
         .getPublicUrl(filePath);
 
       imageUrls.push(data.publicUrl);
