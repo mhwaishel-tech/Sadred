@@ -628,47 +628,51 @@ export default function App() {
         </div>
       )}
 
-      {showCreate && (
+         {showCreate && (
         <div className="modal-backdrop" onClick={() => setShowCreate(false)}>
           <div className="modal" onClick={(event) => event.stopPropagation()}>
             <button className="close-btn" onClick={() => setShowCreate(false)}><X /></button>
             <h2>Nieuwe opdracht plaatsen</h2>
+
             <label>Titel</label>
             <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Wat moet er gebeuren?" />
+
             <label>Beschrijving</label>
             <textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Geef meer informatie..." />
+
             <label>Categorie</label>
             <select value={newCategory} onChange={(event) => setNewCategory(event.target.value)}>
               {categories.map((item) => <option key={item}>{item}</option>)}
             </select>
+
             <label>Stad</label>
             <input value={city} onChange={(event) => setCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
+
             <label>Beloning in euro</label>
             <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} placeholder="50" />
-            
+
             <label>Foto's toevoegen (maximaal 5)</label>
-<input
-  type="file"
-  accept="image/*"
-  multiple
-  onChange={(event) => {
-    setSelectedImages(Array.from(event.target.files ?? []).slice(0, 5));
-  }}
-/>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={(event) => {
+                setSelectedImages(Array.from(event.target.files ?? []).slice(0, 5));
+              }}
+            />
+
+            <button className="primary-btn full-btn" onClick={createListing}>
+              Opdracht plaatsen
+            </button>
           </div>
-        <span>© {new Date().getFullYear()} Sad Rad</span>
-      </footer>
-    </main>
-      )}<label>Foto's toevoegen (maximaal 5)</label>
-<input
-  type="file"
-  
-  Opdracht plaatsen
-</button>
+        </div>
+      )}
 
       <footer className="footer">
         <a href="#" className="logo"><Recycle size={22} /> Sad Rad</a>
         <p>Geef spullen en hulp een tweede kans.</p>
-        
+        <span>© {new Date().getFullYear()} Sad Rad</span>
+      </footer>
+    </main>
   );
-}
+}   
