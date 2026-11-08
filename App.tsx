@@ -210,7 +210,6 @@ export default function App() {
     await supabase.auth.signOut();
     setNotice("Je bent uitgelogd.");
   }
-
   async function createListing() {
     if (!supabase || !user) {
       setShowLogin(true);
@@ -218,66 +217,58 @@ export default function App() {
     }
 
     if (!title.trim() || !city.trim() || !reward) {
-      
-async function createListing() {
-  if (!supabase || !user) {
-    setShowLogin(true);
-    return;
-  }
-
-  if (!title.trim() || !city.trim() || !reward) {
-    setNotice("Vul alle verplichte velden in.");
-    return;
-  }
-
-  const imageUrls: string[] = [];
-
-  for (let i = 0; i < selectedImages.length; i++) {
-    const file = selectedImages[i];
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
-    const filePath = `${user.id}/${Date.now()}-${i}-${safeName}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("listing")
-      .upload(filePath, file);
-
-    if (uploadError) {
-      setNotice(uploadError.message);
+      setNotice("Vul alle verplichte velden in.");
       return;
     }
 
-    const { data } = supabase.storage
-      .from("listing")
-      .getPublicUrl(filePath);
+    const imageUrls: string[] = [];
 
-    imageUrls.push(data.publicUrl);
+    for (let i = 0; i < selectedImages.length; i++) {
+      const file = selectedImages[i];
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+      const filePath = `${user.id}/${Date.now()}-${i}-${safeName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("listing")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        setNotice(uploadError.message);
+        return;
+      }
+
+      const { data } = supabase.storage
+        .from("listing")
+        .getPublicUrl(filePath);
+
+      imageUrls.push(data.publicUrl);
+    }
+
+    const { error } = await supabase.from("listings").insert({
+      user_id: user.id,
+      title: title.trim(),
+      description: description.trim(),
+      category: newCategory,
+      city: city.trim(),
+      reward_eur: Number(reward),
+      status: "active",
+      image_urls: imageUrls,
+    });
+
+    if (error) {
+      setNotice(error.message);
+      return;
+    }
+
+    setTitle("");
+    setDescription("");
+    setCity("");
+    setReward("");
+    setSelectedImages([]);
+    setShowCreate(false);
+    setNotice("Je opdracht is geplaatst.");
+    await loadData();
   }
-
-  const { error } = await supabase.from("listings").insert({
-    user_id: user.id,
-    title: title.trim(),
-    description: description.trim(),
-    category: newCategory,
-    city: city.trim(),
-    reward_eur: Number(reward),
-    status: "active",
-    image_urls: imageUrls,
-  });
-
-  if (error) {
-    setNotice(error.message);
-    return;
-  }
-
-  setTitle("");
-  setDescription("");
-  setCity("");
-  setReward("");
-  setSelectedImages([]);
-  setShowCreate(false);
-  setNotice("Je opdracht is geplaatst.");
-  await loadData();
-            }
   async function submitOffer() {
     if (!supabase || !user || !selectedListing) {
       setShowLogin(true);
