@@ -645,7 +645,16 @@ export default function App() {
             <input value={city} onChange={(event) => setCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
             <label>Beloning in euro</label>
             <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} placeholder="50" />
-            <button className="primary-btn full-btn" onClick={createListing}>Opdracht plaatsen</button>
+            <button className="primary-btn full-btn" onClick={createListing}>Opdracht plaatsen</button> 
+            <label>Foto's toevoegen (maximaal 5)</label>
+<input
+  type="file"
+  accept="image/*"
+  multiple
+  onChange={(event) => {
+    setSelectedImages(Array.from(event.target.files ?? []).slice(0, 5));
+  }}
+/>
           </div>
         </div>
       )}
