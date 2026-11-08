@@ -539,6 +539,20 @@ export default function App() {
           <div className="modal" onClick={(event) => event.stopPropagation()}>
             <button className="close-btn" onClick={closeDetails}><X /></button>
             <span className="listing-category">{selectedListing.category}</span>
+            {selectedListing.image_urls?.map((url, index) => (
+  <img
+    key={index}
+    src={url}
+    alt={selectedListing.title}
+    style={{
+      width: "100%",
+      maxHeight: "300px",
+      objectFit: "contain",
+      marginBottom: "10px",
+      borderRadius: "12px"
+    }}
+  />
+))}
             <h2>{selectedListing.title}</h2>
             <p>{selectedListing.description}</p>
             <p><MapPin size={16} /> {selectedListing.city}</p>
