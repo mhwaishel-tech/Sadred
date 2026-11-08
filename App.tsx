@@ -496,6 +496,13 @@ export default function App() {
           <div className="listing-grid">
             {filteredListings.map((listing) => (
               <article className="listing-card" key={listing.id}>
+                {listing.image_urls?.[0] && (
+  <img
+    src={listing.image_urls[0]}
+    alt={listing.title}
+    style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "12px" }}
+  />
+)}
                 <div className="listing-card-content">
                   <span className="listing-category">{listing.category}</span>
                   <h3>{listing.title}</h3>
