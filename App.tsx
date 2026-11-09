@@ -635,19 +635,16 @@ export default function App() {
       )}
       
       {enlargedImage && (
-  <div
-    onTouchStart={(event) => {
-      touchStartX.current = event.touches[0].clientX;
+      onPointerDown={(event) => {
+      touchStartX.current = event.clientX;
     }}
-    onTouchEnd={(event) => {
+    onPointerUp={(event) => {
       if (touchStartX.current === null) return;
 
-      const delta =
-        event.changedTouches[0].clientX - touchStartX.current;
-
+      const delta = event.clientX - touchStartX.current;
       touchStartX.current = null;
 
-      if (Math.abs(delta) < 50) return;
+      if (Math.abs(delta) < 40) return;
 
       const images = selectedListing?.image_urls ?? [];
       const currentIndex = images.indexOf(enlargedImage);
@@ -658,9 +655,6 @@ export default function App() {
         setEnlargedImage(images[currentIndex - 1]);
       }
     }}
-    style={{
-      position: "fixed",
-      inset: 0,
       zIndex: 10000,
       background: "rgba(0,0,0,0.92)",
       display: "flex",
@@ -673,7 +667,7 @@ export default function App() {
     <button
       onClick={() => setEnlargedImage(null)}
       style={{
-        position: "absolute",
+        touchAction: "none"
         top: "18px",
         right: "18px",
         fontSize: "28px",
