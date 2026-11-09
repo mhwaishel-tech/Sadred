@@ -77,6 +77,7 @@ export default function App() {
   const [showLogin, setShowLogin] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+  const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
   const [showOffer, setShowOffer] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [email, setEmail] = useState("");
