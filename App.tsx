@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+٦import { useEffect, useState, useRef } from "react";
 import {
   Search,
   Plus,
@@ -634,8 +634,9 @@ export default function App() {
         </div>
       )}
 {enlargedImage && (
-  <div
+    <div
     {enlargedImage && (
+    
   <div
     onClick={() => setEnlargedImage(null)}
     style={{
