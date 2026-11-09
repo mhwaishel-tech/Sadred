@@ -634,17 +634,7 @@ export default function App() {
         </div>
       )}
       
-            {enlargedImage && (
-        <div
-          onPointerDown={(event) => {
-            touchStartX.current = event.clientX;
-            event.currentTarget.setPointerCapture(event.pointerId);
-          }}
-          onPointerUp={(event) => {
-            if (touchStartX.current === null) return;
-
-            const delta = event.clientX - touchStartX.current;
-            touchStartX.current = null;
+            
       {enlargedImage && (
         <div
           onTouchStart={(event) => {
