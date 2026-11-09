@@ -636,7 +636,7 @@ export default function App() {
       
     {enlargedImage && (
   <div
-  <div
+  
     onClick={() => setEnlargedImage(null)}
     style={{
       position: "fixed",
