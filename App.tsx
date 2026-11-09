@@ -560,7 +560,7 @@ export default function App() {
     />
   ))}
 </div>
-<h2>{selectedListing.title}</h2>
+
             <p>{selectedListing.description}</p>
             <p><MapPin size={16} /> {selectedListing.city}</p>
             <h3>€ {selectedListing.reward_eur}</h3>
