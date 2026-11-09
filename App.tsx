@@ -635,29 +635,33 @@ export default function App() {
       )}
       
             
+    
       {enlargedImage && (
         <div
-          onTouchStart={(event) => {
-            touchStartX.current = event.touches[0].clientX;
+          onPointerDown={(event) => {
+            if (event.pointerType !== "touch") return;
+            if ((event.target as HTMLElement).closest("button")) return;
+            touchStartX.current = event.clientX;
           }}
-          onTouchEnd={(event) => {
+          onPointerUp={(event) => {
             if (touchStartX.current === null) return;
 
-            const delta =
-              event.changedTouches[0].clientX - touchStartX.current;
-
+            const delta = event.clientX - touchStartX.current;
             touchStartX.current = null;
 
-            if (Math.abs(delta) < 40) return;
+            if (Math.abs(delta) < 35) return;
 
             const images = selectedListing?.image_urls ?? [];
             const index = images.indexOf(enlargedImage);
 
-            if (delta < 0 && index < images.length - 1) {
+            if (delta < 0 && index >= 0 && index < images.length - 1) {
               setEnlargedImage(images[index + 1]);
             } else if (delta > 0 && index > 0) {
               setEnlargedImage(images[index - 1]);
             }
+          }}
+          onPointerCancel={() => {
+            touchStartX.current = null;
           }}
           style={{
             position: "fixed",
@@ -668,7 +672,7 @@ export default function App() {
             alignItems: "center",
             justifyContent: "center",
             padding: "20px",
-            touchAction: "pan-y"
+            touchAction: "none"
           }}
         >
           <button
@@ -685,7 +689,7 @@ export default function App() {
           </button>
 
           <button
-            disabled={(selectedListing?.image_urls ?? []).indexOf(enlargedImage) === 0}
+            disabled={(selectedListing?.image_urls ?? []).indexOf(enlargedImage) <= 0}
             onClick={() => {
               const images = selectedListing?.image_urls ?? [];
               const index = images.indexOf(enlargedImage);
@@ -710,7 +714,9 @@ export default function App() {
             style={{
               maxWidth: "85%",
               maxHeight: "85vh",
-              objectFit: "contain"
+              objectFit: "contain",
+              userSelect: "none",
+              pointerEvents: "none"
             }}
           />
 
@@ -719,7 +725,7 @@ export default function App() {
             onClick={() => {
               const images = selectedListing?.image_urls ?? [];
               const index = images.indexOf(enlargedImage);
-              if (index < images.length - 1) {
+              if (index >= 0 && index < images.length - 1) {
                 setEnlargedImage(images[index + 1]);
               }
             }}
@@ -748,7 +754,8 @@ export default function App() {
             {(selectedListing?.image_urls ?? []).length}
           </div>
         </div>
-      )}    
+      )}
+      
       {showLogin && (
         <div className="modal-backdrop" onClick={() => setShowLogin(false)}>
           <div className="modal" onClick={(event) => event.stopPropagation()}>
