@@ -632,7 +632,43 @@ export default function App() {
           </div>
         </div>
       )}
-
+{enlargedImage && (
+  <div
+    onClick={() => setEnlargedImage(null)}
+    style={{
+      position: "fixed",
+      inset: 0,
+      zIndex: 10000,
+      background: "rgba(0,0,0,0.92)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "20px"
+    }}
+  >
+    <button
+      onClick={() => setEnlargedImage(null)}
+      style={{
+        position: "absolute",
+        top: "18px",
+        right: "18px",
+        fontSize: "28px"
+      }}
+    >
+      ×
+    </button>
+    <img
+      src={enlargedImage}
+      alt="Vergrote foto"
+      onClick={(event) => event.stopPropagation()}
+      style={{
+        maxWidth: "100%",
+        maxHeight: "90vh",
+        objectFit: "contain"
+      }}
+    />
+  </div>
+)}
       {showLogin && (
         <div className="modal-backdrop" onClick={() => setShowLogin(false)}>
           <div className="modal" onClick={(event) => event.stopPropagation()}>
