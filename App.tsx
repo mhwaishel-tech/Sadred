@@ -1,4 +1,4 @@
-٦import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Search,
   Plus,
@@ -634,61 +634,70 @@ export default function App() {
         </div>
       )}
       
-      {enlargedImage && (
-      onPointerDown={(event) => {
-      touchStartX.current = event.clientX;
-    }}
-    onPointerUp={(event) => {
-      if (touchStartX.current === null) return;
+            {enlargedImage && (
+        <div
+          onPointerDown={(event) => {
+            touchStartX.current = event.clientX;
+            event.currentTarget.setPointerCapture(event.pointerId);
+          }}
+          onPointerUp={(event) => {
+            if (touchStartX.current === null) return;
 
-      const delta = event.clientX - touchStartX.current;
-      touchStartX.current = null;
+            const delta = event.clientX - touchStartX.current;
+            touchStartX.current = null;
 
-      if (Math.abs(delta) < 40) return;
+            if (Math.abs(delta) < 40) return;
 
-      const images = selectedListing?.image_urls ?? [];
-      const currentIndex = images.indexOf(enlargedImage);
+            const images = selectedListing?.image_urls ?? [];
+            const currentIndex = images.indexOf(enlargedImage);
 
-      if (delta < 0 && currentIndex < images.length - 1) {
-        setEnlargedImage(images[currentIndex + 1]);
-      } else if (delta > 0 && currentIndex > 0) {
-        setEnlargedImage(images[currentIndex - 1]);
-      }
-    }}
-      zIndex: 10000,
-      background: "rgba(0,0,0,0.92)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "20px",
-      touchAction: "pan-y"
-    }}
-  >
-    <button
-      onClick={() => setEnlargedImage(null)}
-      style={{
-        touchAction: "none"
-        top: "18px",
-        right: "18px",
-        fontSize: "28px",
-        zIndex: 2
-      }}
-    >
-      ×
-    </button>
+            if (delta < 0 && currentIndex < images.length - 1) {
+              setEnlargedImage(images[currentIndex + 1]);
+            } else if (delta > 0 && currentIndex > 0) {
+              setEnlargedImage(images[currentIndex - 1]);
+            }
+          }}
+          onPointerCancel={() => {
+            touchStartX.current = null;
+          }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 10000,
+            background: "rgba(0,0,0,0.92)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+            touchAction: "none"
+          }}
+        >
+          <button
+            onClick={() => setEnlargedImage(null)}
+            style={{
+              position: "absolute",
+              top: "18px",
+              right: "18px",
+              fontSize: "28px",
+              zIndex: 2
+            }}
+          >
+            ×
+          </button>
 
-    <img
-      src={enlargedImage}
-      alt="Vergrote foto"
-      style={{
-        maxWidth: "100%",
-        maxHeight: "90vh",
-        objectFit: "contain",
-        touchAction: "pan-y"
-      }}
-    />
-  </div>
-)}
+          <img
+            src={enlargedImage}
+            alt="Vergrote foto"
+            draggable={false}
+            style={{
+              maxWidth: "100%",
+              maxHeight: "90vh",
+              objectFit: "contain",
+              pointerEvents: "none"
+            }}
+          />
+        </div>
+      
       {showLogin && (
         <div className="modal-backdrop" onClick={() => setShowLogin(false)}>
           <div className="modal" onClick={(event) => event.stopPropagation()}>
