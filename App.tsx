@@ -634,10 +634,30 @@ export default function App() {
         </div>
       )}
       
-    {enlargedImage && (
+      {enlargedImage && (
   <div
-  
-    onClick={() => setEnlargedImage(null)}
+    onTouchStart={(event) => {
+      touchStartX.current = event.touches[0].clientX;
+    }}
+    onTouchEnd={(event) => {
+      if (touchStartX.current === null) return;
+
+      const delta =
+        event.changedTouches[0].clientX - touchStartX.current;
+
+      touchStartX.current = null;
+
+      if (Math.abs(delta) < 50) return;
+
+      const images = selectedListing?.image_urls ?? [];
+      const currentIndex = images.indexOf(enlargedImage);
+
+      if (delta < 0 && currentIndex < images.length - 1) {
+        setEnlargedImage(images[currentIndex + 1]);
+      } else if (delta > 0 && currentIndex > 0) {
+        setEnlargedImage(images[currentIndex - 1]);
+      }
+    }}
     style={{
       position: "fixed",
       inset: 0,
@@ -646,7 +666,8 @@ export default function App() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      padding: "20px"
+      padding: "20px",
+      touchAction: "pan-y"
     }}
   >
     <button
@@ -665,29 +686,6 @@ export default function App() {
     <img
       src={enlargedImage}
       alt="Vergrote foto"
-      onClick={(event) => event.stopPropagation()}
-      onTouchStart={(event) => {
-        touchStartX.current = event.touches[0].clientX;
-      }}
-      onTouchEnd={(event) => {
-        if (touchStartX.current === null) return;
-
-        const delta =
-          event.changedTouches[0].clientX - touchStartX.current;
-
-        touchStartX.current = null;
-
-        if (Math.abs(delta) < 50) return;
-
-        const images = selectedListing?.image_urls ?? [];
-        const currentIndex = images.indexOf(enlargedImage);
-
-        if (delta < 0 && currentIndex < images.length - 1) {
-          setEnlargedImage(images[currentIndex + 1]);
-        } else if (delta > 0 && currentIndex > 0) {
-          setEnlargedImage(images[currentIndex - 1]);
-        }
-      }}
       style={{
         maxWidth: "100%",
         maxHeight: "90vh",
