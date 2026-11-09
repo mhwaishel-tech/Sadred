@@ -645,59 +645,120 @@ export default function App() {
 
             const delta = event.clientX - touchStartX.current;
             touchStartX.current = null;
+      {enlargedImage && (
+        <div
+          onTouchStart={(event) => {
+            touchStartX.current = event.touches[0].clientX;
+          }}
+          onTouchEnd={(event) => {
+            if (touchStartX.current === null) return;
+
+            const delta =
+              event.changedTouches[0].clientX - touchStartX.current;
+
+            touchStartX.current = null;
 
             if (Math.abs(delta) < 40) return;
 
             const images = selectedListing?.image_urls ?? [];
-            const currentIndex = images.indexOf(enlargedImage);
+            const index = images.indexOf(enlargedImage);
 
-            if (delta < 0 && currentIndex < images.length - 1) {
-              setEnlargedImage(images[currentIndex + 1]);
-            } else if (delta > 0 && currentIndex > 0) {
-              setEnlargedImage(images[currentIndex - 1]);
+            if (delta < 0 && index < images.length - 1) {
+              setEnlargedImage(images[index + 1]);
+            } else if (delta > 0 && index > 0) {
+              setEnlargedImage(images[index - 1]);
             }
-          }}
-          onPointerCancel={() => {
-            touchStartX.current = null;
           }}
           style={{
             position: "fixed",
             inset: 0,
             zIndex: 10000,
-            background: "rgba(0,0,0,0.92)",
+            background: "rgba(0,0,0,0.95)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             padding: "20px",
-            touchAction: "none"
+            touchAction: "pan-y"
           }}
         >
           <button
             onClick={() => setEnlargedImage(null)}
             style={{
               position: "absolute",
-              top: "18px",
-              right: "18px",
-              fontSize: "28px",
-              zIndex: 2
+              top: "15px",
+              right: "20px",
+              fontSize: "32px",
+              zIndex: 3
             }}
           >
             ×
           </button>
 
+          <button
+            disabled={(selectedListing?.image_urls ?? []).indexOf(enlargedImage) === 0}
+            onClick={() => {
+              const images = selectedListing?.image_urls ?? [];
+              const index = images.indexOf(enlargedImage);
+              if (index > 0) setEnlargedImage(images[index - 1]);
+            }}
+            style={{
+              position: "absolute",
+              left: "10px",
+              top: "50%",
+              zIndex: 3,
+              fontSize: "30px",
+              padding: "12px"
+            }}
+          >
+            ❮
+          </button>
+
           <img
             src={enlargedImage}
-            alt="Vergrote foto"
+            alt="Foto"
             draggable={false}
             style={{
-              maxWidth: "100%",
-              maxHeight: "90vh",
-              objectFit: "contain",
-              pointerEvents: "none"
+              maxWidth: "85%",
+              maxHeight: "85vh",
+              objectFit: "contain"
             }}
           />
+
+          <button
+            disabled={(selectedListing?.image_urls ?? []).indexOf(enlargedImage) === (selectedListing?.image_urls ?? []).length - 1}
+            onClick={() => {
+              const images = selectedListing?.image_urls ?? [];
+              const index = images.indexOf(enlargedImage);
+              if (index < images.length - 1) {
+                setEnlargedImage(images[index + 1]);
+              }
+            }}
+            style={{
+              position: "absolute",
+              right: "10px",
+              top: "50%",
+              zIndex: 3,
+              fontSize: "30px",
+              padding: "12px"
+            }}
+          >
+            ❯
+          </button>
+
+          <div
+            style={{
+              position: "absolute",
+              bottom: "20px",
+              color: "white",
+              fontSize: "16px"
+            }}
+          >
+            {(selectedListing?.image_urls ?? []).indexOf(enlargedImage) + 1}
+            {" / "}
+            {(selectedListing?.image_urls ?? []).length}
+          </div>
         </div>
-      
+      )}    
       {showLogin && (
         <div className="modal-backdrop" onClick={() => setShowLogin(false)}>
           <div className="modal" onClick={(event) => event.stopPropagation()}>
