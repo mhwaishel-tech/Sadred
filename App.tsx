@@ -634,7 +634,8 @@ export default function App() {
         </div>
       )}
       
-    
+    {enlargedImage && (
+  <div
   <div
     onClick={() => setEnlargedImage(null)}
     style={{
