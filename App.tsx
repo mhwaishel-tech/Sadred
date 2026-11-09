@@ -79,6 +79,16 @@ export default function App() {
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
   const touchStartX = useRef<number | null>(null);
+  useEffect(() => {
+  if (!enlargedImage) return;
+
+  const oldOverflow = document.body.style.overflow;
+  document.body.style.overflow = "hidden";
+
+  return () => {
+    document.body.style.overflow = oldOverflow;
+  };
+}, [enlargedImage]);
   const [showOffer, setShowOffer] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [email, setEmail] = useState("");
