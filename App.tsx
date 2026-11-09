@@ -78,6 +78,7 @@ export default function App() {
   const [showCreate, setShowCreate] = useState(false);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
+  const touchStartX = useRef<number | null>(null);
   const [showOffer, setShowOffer] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [email, setEmail] = useState("");
