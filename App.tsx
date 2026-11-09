@@ -551,6 +551,7 @@ export default function App() {
     <img
       key={index}
       src={url}
+      onClick={() => setEnlargedImage(url)}
       alt={`Foto ${index + 1}`}
       style={{
         width: "100%",
