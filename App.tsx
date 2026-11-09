@@ -539,8 +539,8 @@ export default function App() {
           <div className="modal" onClick={(event) => event.stopPropagation()}>
             <button className="close-btn" onClick={closeDetails}><X /></button>
             <span className="listing-category">{selectedListing.category}</span>
-            
-            <h<div style={{
+            <h2>{selectedListing.title}</h2>
+<div style={{
   display: "grid",
   gridTemplateColumns: "repeat(2, 1fr)",
   gap: "12px",
@@ -559,7 +559,8 @@ export default function App() {
       }}
     />
   ))}
-</div>2>{selectedListing.title}</h2>
+</div>
+<h2>{selectedListing.title}</h2>
             <p>{selectedListing.description}</p>
             <p><MapPin size={16} /> {selectedListing.city}</p>
             <h3>€ {selectedListing.reward_eur}</h3>
