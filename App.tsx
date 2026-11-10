@@ -993,7 +993,55 @@ export default function App() {
           </div>
         </div>
       )}
+{showEdit && selectedListing && (
+  <div className="modal-backdrop" onClick={() => setShowEdit(false)}>
+    <div className="modal" onClick={(event) => event.stopPropagation()}>
+      <button className="close-btn" onClick={() => setShowEdit(false)}>
+        <X />
+      </button>
 
+      <h2>Advertentie bewerken</h2>
+
+      <label>Titel</label>
+      <input value={title} onChange={(event) => setTitle(event.target.value)} />
+
+      <label>Beschrijving</label>
+      <textarea value={description} onChange={(event) => setDescription(event.target.value)} />
+
+      <label>Categorie</label>
+      <select value={newCategory} onChange={(event) => setNewCategory(event.target.value)}>
+        {categories.map((item) => <option key={item}>{item}</option>)}
+      </select>
+
+      <label>Stad</label>
+      <input value={city} onChange={(event) => setCity(event.target.value)} />
+
+      <label>Beloning in euro</label>
+      <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} />
+
+      <p>Huidige foto's: {selectedListing.image_urls?.length ?? 0}</p>
+
+      <label>Nieuwe foto's toevoegen (maximaal 5 in totaal)</label>
+      <input
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={(event) => {
+          const files = Array.from(event.target.files ?? []);
+          const remaining = Math.max(0, 5 - (selectedListing.image_urls?.length ?? 0));
+          if (files.length > remaining) {
+            setNotice(`Je kunt nog maximaal ${remaining} foto's toevoegen.`);
+          }
+          setSelectedImages(files.slice(0, remaining));
+        }}
+      />
+
+      <button className="primary-btn full-btn" onClick={updateListing}>
+        Wijzigingen opslaan
+      </button>
+    </div>
+  </div>
+)}
       <footer className="footer">
         <a href="#" className="logo"><Recycle size={22} /> Sad Rad</a>
         <p>Geef spullen en hulp een tweede kans.</p>
