@@ -873,13 +873,11 @@ setSelectedListing({
     (item) => item.id === lastMessage?.listing_id
   );
 
-  return (
+     return (
     <div
       className="offer-card"
       key={otherId}
-      <strong>
-  {allProfiles.find((item) => item.user_id === otherId)?.display_name || "Gebruiker"}
-</strong>
+      style={{ marginBottom: "12px", cursor: "pointer" }}
       onClick={() => {
         setSelectedChatUserId(otherId);
         setSelectedListing(listing || null);
@@ -888,18 +886,15 @@ setSelectedListing({
       }}
     >
       <strong>{otherProfile?.display_name || "Gebruiker"}</strong>
-      <p>{lastMessage?.body}</p>
-      <small>{listing?.title || "Gesprek"}</small>
-      <br />
-      
-
-      
-      {messages.filter((message) =>
-        message.sender_id === user.id || message.receiver_id === user.id
-      ).length === 0 && <p>Je hebt nog geen berichten.</p>}
     </div>
-  </div>
-)}
+  );
+})}
+
+{messages.filter(
+  (message) =>
+    message.sender_id === user.id || message.receiver_id === user.id
+).length === 0 && <p>Je hebt nog geen berichten.</p>}
+  
       {showChat && user && selectedChatUserId && (
   <div className="modal-backdrop" onClick={() => setShowChat(false)}>
     <div className="modal" onClick={(event) => event.stopPropagation()}>
