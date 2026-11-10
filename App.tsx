@@ -695,6 +695,29 @@ export default function App() {
 
             {user && selectedListing.user_id === user.id ? (
               <div>
+                <div>
+  <button
+    className="secondary-btn"
+    onClick={() => {
+      setTitle(selectedListing.title);
+      setDescription(selectedListing.description);
+      setCity(selectedListing.city);
+      setReward(String(selectedListing.reward_eur));
+      setNewCategory(selectedListing.category);
+      setSelectedImages([]);
+      setShowEdit(true);
+    }}
+  >
+    Advertentie bewerken
+  </button>
+
+  <button
+    className="secondary-btn"
+    onClick={deleteListing}
+  >
+    Opdracht verwijderen
+  </button>
+</div>
                 <h3>Ontvangen aanbiedingen</h3>
                 {offers.filter((offer) => offer.listing_id === selectedListing.id).length === 0 ? (
                   <p>Nog geen aanbiedingen.</p>
