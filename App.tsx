@@ -94,6 +94,7 @@ export default function App() {
   const [showOffer, setShowOffer] = useState(false);
   const [showInbox, setShowInbox] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [selectedChatUserId, setSelectedChatUserId] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -486,12 +487,14 @@ setSelectedListing({
 
     await loadData();
   }
+;async function sendMessage() {
+  if (!supabase || !user || !selectedListing || !chatText.trim()) {
+    return;
+  }
 
-  async function sendMessage() {
-    if (!supabase || !user || !selectedListing || !chatText.trim()) {
-      return;
-    }
+  let receiverId = selectedChatUserId;
 
+  if (!receiverId) {
     const acceptedOffer = offers.find(
       (offer) =>
         offer.listing_id === selectedListing.id &&
@@ -503,25 +506,27 @@ setSelectedListing({
       return;
     }
 
-    const receiverId =
+    receiverId =
       user.id === selectedListing.user_id
         ? acceptedOffer.user_id
         : selectedListing.user_id;
+  }
 
-    const { error } = await supabase.from("messages").insert({
-      listing_id: selectedListing.id,
-      sender_id: user.id,
-      receiver_id: receiverId,
-      body: chatText.trim(),
-    });
+  const { error } = await supabase.from("messages").insert({
+    listing_id: selectedListing.id,
+    sender_id: user.id,
+    receiver_id: receiverId,
+    body: chatText.trim(),
+  });
 
-    if (error) {
-      setNotice("Bericht verzenden mislukt.");
-      return;
-    }
+  if (error) {
+    setNotice("Bericht verzenden mislukt.");
+    return;
+  }
 
-    setChatText("");
-    await loadData();
+  setChatText("");
+  await loadData();
+}
   }
 
   const filteredListings = listings.filter((listing) => {
@@ -834,48 +839,128 @@ setSelectedListing({
 
       <h2><MessageCircle /> Berichten</h2>
 
-   
-
-{messages
-  .filter((message) =>
-    message.sender_id === user.id || message.receiver_id === user.id
+   {Array.from(
+  new Set(
+    messages
+      .filter((message) =>
+        message.sender_id === user.id || message.receiver_id === user.id
+      )
+      .map((message) =>
+        message.sender_id === user.id
+          ? message.receiver_id
+          : message.sender_id
+      )
   )
-  .map((message) => {
-    const senderProfile = allProfiles.find(
-      (item) => item.user_id === message.sender_id
+).map((otherId) => {
+  const conversation = messages
+    .filter(
+      (message) =>
+        (message.sender_id === user.id && message.receiver_id === otherId) ||
+        (message.sender_id === otherId && message.receiver_id === user.id)
+    )
+    .sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() -
+        new Date(b.created_at).getTime()
     );
 
-    const senderName =
-      message.sender_id === user.id
-        ? profile?.display_name || "Jij"
-        : senderProfile?.display_name || "Gebruiker";
+  const lastMessage = conversation[conversation.length - 1];
+  const otherProfile = allProfiles.find(
+    (item) => item.user_id === otherId
+  );
 
-    const listing = listings.find(
-      (item) => item.id === message.listing_id
-    );
+  const listing = listings.find(
+    (item) => item.id === lastMessage?.listing_id
+  );
 
-    if (!listing) return null;
-
-    return (
-      <div
-        className="offer-card"
-        key={message.id}
-        style={{ marginBottom: "12px" }}
-      >
-        <strong>{senderName}</strong>
-        <p>{message.body}</p>
-        <small>{listing.title}</small>
-        <br />
-        <small>
-          {new Date(message.created_at).toLocaleString("nl-BE")}
-        </small>
-      </div>
-    );
+  return (
+    <div
+      className="offer-card"
+      key={otherId}
+      style={{ marginBottom: "12px", cursor: "pointer" }}
+      onClick={() => {
+        setSelectedChatUserId(otherId);
+        setSelectedListing(listing || null);
+        setShowInbox(false);
+        setShowChat(true);
+      }}
+    >
+      <strong>{otherProfile?.display_name || "Gebruiker"}</strong>
+      <p>{lastMessage?.body}</p>
+      <small>{listing?.title || "Gesprek"}</small>
+      <br />
+      <small>
+        {new Date(lastMessage.created_at).toLocaleString("nl-BE")}
+      </small>
+    </div>
+  );
+})}
   })}
       
       {messages.filter((message) =>
         message.sender_id === user.id || message.receiver_id === user.id
       ).length === 0 && <p>Je hebt nog geen berichten.</p>}
+    </div>
+  </div>
+)}
+      {showChat && user && selectedChatUserId && (
+  <div className="modal-backdrop" onClick={() => setShowChat(false)}>
+    <div className="modal" onClick={(event) => event.stopPropagation()}>
+      <button className="close-btn" onClick={() => setShowChat(false)}>
+        <X />
+      </button>
+
+      <h2>
+        {allProfiles.find(
+          (item) => item.user_id === selectedChatUserId
+        )?.display_name || "Gebruiker"}
+      </h2>
+
+      <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+        {messages
+          .filter(
+            (message) =>
+              (message.sender_id === user.id &&
+                message.receiver_id === selectedChatUserId) ||
+              (message.sender_id === selectedChatUserId &&
+                message.receiver_id === user.id)
+          )
+          .map((message) => (
+            <div
+              key={message.id}
+              style={{
+                textAlign: message.sender_id === user.id ? "right" : "left",
+                margin: "10px 0",
+              }}
+            >
+              <div
+                style={{
+                  display: "inline-block",
+                  padding: "10px",
+                  borderRadius: "12px",
+                  background:
+                    message.sender_id === user.id ? "#d9fdd3" : "#eeeeee",
+                  maxWidth: "80%",
+                }}
+              >
+                <p>{message.body}</p>
+                <small>
+                  {new Date(message.created_at).toLocaleString("nl-BE")}
+                </small>
+              </div>
+            </div>
+          ))}
+      </div>
+
+      <textarea
+        value={chatText}
+        onChange={(event) => setChatText(event.target.value)}
+        placeholder="Schrijf een bericht..."
+      />
+
+      <button className="primary-btn full-btn" onClick={sendMessage}>
+        <Send size={16} /> Verstuur
+      </button>
     </div>
   </div>
 )}
