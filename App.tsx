@@ -299,7 +299,7 @@ export default function App() {
 
   const imageUrls = [...editImageUrls];
 
-    if (imageUrls.length + selectedImages.length > 5) {
+    if (editImageUrls.length + selectedImages.length > 5) {
       setNotice("Maximaal 5 foto's toegestaan.");
       return;
     }
@@ -342,6 +342,24 @@ export default function App() {
       setNotice(error.message);
       return;
     }
+      const removedUrls = (selectedListing.image_urls ?? []).filter(
+  (url) => !editImageUrls.includes(url)
+);
+const marker = "/storage/v1/object/public/listing-images/";
+const removedPaths = removedUrls
+  .map((url) => {
+    const index = url.indexOf(marker);
+    if (index === -1) return null;
+    return decodeURIComponent(url.slice(index + marker.length));
+  })
+  .filter((path): path is string => Boolean(path));
+
+if (removedPaths.length > 0) {
+  const { error: removeError } = await supabase.storage
+    .from("listing-images")
+    .remove(removedPaths);
+  if (removeError) setNotice(removeError.message);
+}
 setSelectedListing({
   ...selectedListing,
   title: title.trim(),
@@ -353,6 +371,7 @@ setSelectedListing({
 });
     setShowEdit(false);
     setSelectedImages([]);
+      setEditImageUrls([]);
     setNotice("Opdracht bijgewerkt.");
     await loadData();
     }
@@ -1149,7 +1168,7 @@ setSelectedListing({
         multiple
         onChange={(event) => {
           const files = Array.from(event.target.files ?? []);
-          const remaining = Math.max(0, 5 - (selectedListing.image_urls?.length ?? 0));
+          const remaining = Math.max(0, 5 - editImageUrls.length);
           if (files.length > remaining) {
             setNotice(`Je kunt nog maximaal ${remaining} foto's toevoegen.`);
           }
