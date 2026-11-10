@@ -845,18 +845,28 @@ setSelectedListing({
       .filter((message) =>
         message.sender_id === user.id || message.receiver_id === user.id
       )
-      .map((message) =>
-        message.sender_id === user.id
-          ? message.receiver_id
-          : message.sender_id
+      .map((message) => {
+  const otherId =
+    message.sender_id === user.id
+      ? message.receiver_id
+      : message.sender_id;
+
+  return `${otherId}|||${message.listing_id}`;
+})
+      
       )
   )
-).map((otherId) => {
+).map((chatKey) => {
+  const [otherId, listingId] = chatKey.split("|||");
   const conversation = messages
-    .filter(
-      (message) =>
+  .filter(
+    (message) =>
+      message.listing_id === listingId &&
+      (
         (message.sender_id === user.id && message.receiver_id === otherId) ||
         (message.sender_id === otherId && message.receiver_id === user.id)
+      )
+  )
     )
     .sort(
       (a, b) =>
@@ -876,7 +886,7 @@ setSelectedListing({
      return (
     <div
       className="offer-card"
-      key={otherId}
+      key={chatKey}
       style={{ marginBottom: "12px", cursor: "pointer" }}
       onClick={() => {
         setSelectedChatUserId(otherId);
@@ -885,7 +895,8 @@ setSelectedListing({
         setShowChat(true);
       }}
     >
-      <strong>{otherProfile?.display_name || "Gebruiker"}</strong>
+      <strong>{otherProfile?.display_name || "Gebruiker"}</strong> 
+      <small>{listing?.title || "Advertentie"}</small>
     </div>
   );
 })}
@@ -914,6 +925,7 @@ setSelectedListing({
         {messages
           .filter(
             (message) =>
+              message.listing_id === selectedListing?.id &&
               (message.sender_id === user.id &&
                 message.receiver_id === selectedChatUserId) ||
               (message.sender_id === selectedChatUserId &&
