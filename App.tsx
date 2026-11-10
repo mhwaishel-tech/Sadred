@@ -1069,7 +1069,7 @@ setSelectedListing({
       <input value={city} onChange={(event) => setCity(event.target.value)} />
 
       <label>Beloning in euro</label>
-      <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} /
+      <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} />
 <div>
   <p>Huidige foto's: {editImageUrls.length}</p>
 
