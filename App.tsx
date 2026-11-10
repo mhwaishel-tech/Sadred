@@ -91,6 +91,7 @@ export default function App() {
   };
 }, [enlargedImage]);
   const [showOffer, setShowOffer] = useState(false);
+  const [showInbox, setShowInbox] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -101,6 +102,7 @@ export default function App() {
   const [city, setCity] = useState("");
   const [reward, setReward] = useState("");
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [editImageUrls, setEditImageUrls] = useState<string[]>([]);
   const [newCategory, setNewCategory] = useState(categories[0]);
   const [offerAmount, setOfferAmount] = useState("");
   const [offerMessage, setOfferMessage] = useState("");
@@ -295,7 +297,7 @@ export default function App() {
       return;
     }
 
-    const imageUrls = [...(selectedListing.image_urls ?? [])];
+  const imageUrls = [...editImageUrls];
 
     if (imageUrls.length + selectedImages.length > 5) {
       setNotice("Maximaal 5 foto's toegestaan.");
@@ -536,7 +538,12 @@ setSelectedListing({
           <a href="#opdrachten">Opdrachten</a>
           <a href="#hoe-werkt-het">Hoe werkt het?</a>
         </nav>
-
+<button
+  className="secondary-btn"
+  onClick={() => user ? setShowInbox(true) : setShowLogin(true)}
+>
+  <MessageCircle size={17} /> Berichten
+</button>
         <div className="header-actions">
           {user ? (
             <button onClick={handleLogout} className="secondary-btn">
@@ -713,6 +720,7 @@ setSelectedListing({
       setReward(String(selectedListing.reward_eur));
       setNewCategory(selectedListing.category);
       setSelectedImages([]);
+      setEditImageUrls(selectedListing.image_urls ?? []);
       setShowEdit(true);
     }}
   >
@@ -792,7 +800,72 @@ setSelectedListing({
       
             
     
-      
+      {showInbox && user && (
+  <div className="modal-backdrop" onClick={() => setShowInbox(false)}>
+    <div className="modal" onClick={(event) => event.stopPropagation()}>
+      <button className="close-btn" onClick={() => setShowInbox(false)}>
+        <X />
+      </button>
+
+      <h2><MessageCircle /> Berichten</h2>
+
+      {messages.filter((message, index, array) => {
+        if (message.sender_id !== user.id && message.receiver_id !== user.id) {
+          return false;
+        }
+
+        const otherId = message.sender_id === user.id
+          ? message.receiver_id
+          : message.sender_id;
+
+        return array.findIndex((item) => {
+          const itemOtherId = item.sender_id === user.id
+            ? item.receiver_id
+            : item.sender_id;
+
+          return item.listing_id === message.listing_id &&
+            itemOtherId === otherId &&
+            (item.sender_id === user.id || item.receiver_id === user.id);
+        }) === index;
+      }).map((message) => {
+        const otherId = message.sender_id === user.id
+          ? message.receiver_id
+          : message.sender_id;
+
+        const conversation = messages.filter((item) =>
+          item.listing_id === message.listing_id &&
+          (item.sender_id === user.id ? item.receiver_id : item.sender_id) === otherId
+        );
+
+        const lastMessage = conversation[conversation.length - 1];
+        const listing = listings.find((item) => item.id === message.listing_id);
+
+        if (!listing) return null;
+
+        return (
+          <div
+            className="offer-card"
+            key={`${message.listing_id}-${otherId}`}
+            onClick={() => {
+              setSelectedListing(listing);
+              setShowInbox(false);
+              setShowChat(true);
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            <strong>{listing.title}</strong>
+            <p>{lastMessage?.body}</p>
+            <small>Open gesprek</small>
+          </div>
+        );
+      })}
+
+      {messages.filter((message) =>
+        message.sender_id === user.id || message.receiver_id === user.id
+      ).length === 0 && <p>Je hebt nog geen berichten.</p>}
+    </div>
+  </div>
+)}
       {showLogin && (
         <div className="modal-backdrop" onClick={() => setShowLogin(false)}>
           <div className="modal" onClick={(event) => event.stopPropagation()}>
@@ -1025,10 +1098,50 @@ setSelectedListing({
       <input value={city} onChange={(event) => setCity(event.target.value)} />
 
       <label>Beloning in euro</label>
-      <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} />
+      <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} /
+<div>
+  <p>Huidige foto's: {editImageUrls.length}</p>
 
-      <p>Huidige foto's: {selectedListing.image_urls?.length ?? 0}</p>
+  <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+    {editImageUrls.map((url, index) => (
+      <div key={url} style={{ width: "110px" }}>
+        <img
+          src={url}
+          alt={`Foto ${index + 1}`}
+          style={{ width: "100px", height: "85px", objectFit: "cover", borderRadius: "8px" }}
+        />
 
+        <button type="button" onClick={() => setEditImageUrls(editImageUrls.filter((_, i) => i !== index))}>
+          Verwijderen
+        </button>
+
+        <button
+          type="button"
+          disabled={index === 0}
+          onClick={() => {
+            const next = [...editImageUrls];
+            [next[index - 1], next[index]] = [next[index], next[index - 1]];
+            setEditImageUrls(next);
+          }}
+        >
+          ←
+        </button>
+
+        <button
+          type="button"
+          disabled={index === editImageUrls.length - 1}
+          onClick={() => {
+            const next = [...editImageUrls];
+            [next[index + 1], next[index]] = [next[index], next[index + 1]];
+            setEditImageUrls(next);
+          }}
+        >
+          →
+        </button>
+      </div>
+    ))}
+  </div>
+</div>
       <label>Nieuwe foto's toevoegen (maximaal 5 in totaal)</label>
       <input
         type="file"
