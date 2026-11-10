@@ -895,7 +895,7 @@ setSelectedListing({
     </div>
   );
 })}
-  })}
+
       
       {messages.filter((message) =>
         message.sender_id === user.id || message.receiver_id === user.id
