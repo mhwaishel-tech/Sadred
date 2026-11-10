@@ -792,7 +792,7 @@ setSelectedListing({
       
             
     
-      {
+      
       {showLogin && (
         <div className="modal-backdrop" onClick={() => setShowLogin(false)}>
           <div className="modal" onClick={(event) => event.stopPropagation()}>
