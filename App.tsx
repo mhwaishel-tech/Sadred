@@ -889,12 +889,7 @@ setSelectedListing({
       <p>{lastMessage?.body}</p>
       <small>{listing?.title || "Gesprek"}</small>
       <br />
-      <small>
-        {new Date(lastMessage.created_at).toLocaleString("nl-BE")}
-      </small>
-    </div>
-  );
-})}
+      
 
       
       {messages.filter((message) =>
