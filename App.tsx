@@ -971,30 +971,7 @@ setSelectedListing({
             ×
           </button>
 
-          <button
-            disabled={(selectedListing?.image_urls ?? []).indexOf(enlargedImage) <= 0}
-            onClick={() => {
-              const images = selectedListing?.image_urls ?? [];
-              const index = images.indexOf(enlargedImage);
-              if (index > 0) setEnlargedImage(images[index - 1]);
-            }}
-            style={{
-              position: "absolute",
-              left: "12px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 5,
-              fontSize: "28px",
-              color: "white",
-              background: "#333",
-              border: "1px solid white",
-              borderRadius: "50%",
-              width: "48px",
-              height: "48px"
-            }}
-          >
-            ❮
-          </button>
+          
 
           <img
             src={enlargedImage}
@@ -1009,32 +986,7 @@ setSelectedListing({
             }}
           />
 
-          <button
-            disabled={(selectedListing?.image_urls ?? []).indexOf(enlargedImage) >= (selectedListing?.image_urls ?? []).length - 1}
-            onClick={() => {
-              const images = selectedListing?.image_urls ?? [];
-              const index = images.indexOf(enlargedImage);
-              if (index >= 0 && index < images.length - 1) {
-                setEnlargedImage(images[index + 1]);
-              }
-            }}
-            style={{
-              position: "absolute",
-              right: "12px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 5,
-              fontSize: "28px",
-              color: "white",
-              background: "#333",
-              border: "1px solid white",
-              borderRadius: "50%",
-              width: "48px",
-              height: "48px"
-            }}
-          >
-            ❯
-          </button>
+          
 
           <div
             style={{
@@ -1181,7 +1133,30 @@ setSelectedListing({
       </button>
     </div>
   </div>
+  
 )}
+      <button
+  onClick={() => user ? setShowInbox(true) : setShowLogin(true)}
+  style={{
+    position: "fixed",
+    bottom: "20px",
+    right: "20px",
+    width: "60px",
+    height: "60px",
+    borderRadius: "50%",
+    background: "#16a34a",
+    color: "white",
+    border: "none",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
+    zIndex: 9999,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer"
+  }}
+>
+  <MessageCircle size={28} />
+</button>
       <footer className="footer">
         <a href="#" className="logo"><Recycle size={22} /> Sad Rad</a>
         <p>Geef spullen en hulp een tweede kans.</p>
