@@ -76,6 +76,7 @@ export default function App() {
   const [category, setCategory] = useState("Alles");
   const [showLogin, setShowLogin] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
   const touchStartX = useRef<number | null>(null);
