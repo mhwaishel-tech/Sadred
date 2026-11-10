@@ -894,7 +894,9 @@ setSelectedListing({
   (message) =>
     message.sender_id === user.id || message.receiver_id === user.id
 ).length === 0 && <p>Je hebt nog geen berichten.</p>}
-  
+    </div>
+  </div>
+)}  
       {showChat && user && selectedChatUserId && (
   <div className="modal-backdrop" onClick={() => setShowChat(false)}>
     <div className="modal" onClick={(event) => event.stopPropagation()}>
