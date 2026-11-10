@@ -340,7 +340,15 @@ export default function App() {
       setNotice(error.message);
       return;
     }
-
+setSelectedListing({
+  ...selectedListing,
+  title: title.trim(),
+  description: description.trim(),
+  category: newCategory,
+  city: city.trim(),
+  reward_eur: Number(reward),
+  image_urls: imageUrls,
+});
     setShowEdit(false);
     setSelectedImages([]);
     setNotice("Opdracht bijgewerkt.");
