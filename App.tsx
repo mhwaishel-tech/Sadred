@@ -834,59 +834,45 @@ setSelectedListing({
 
       <h2><MessageCircle /> Berichten</h2>
 
-      {messages.filter((message, index, array) => {
-        if (message.sender_id !== user.id && message.receiver_id !== user.id) {
-          return false;
-        }
+   
 
-        const otherId = message.sender_id === user.id
-          ? message.receiver_id
-          : message.sender_id;
-        return array.findIndex((item) => {
-          const itemOtherId = item.sender_id === user.id
-            ? item.receiver_id
-            : item.sender_id;
+{messages
+  .filter((message) =>
+    message.sender_id === user.id || message.receiver_id === user.id
+  )
+  .map((message) => {
+    const senderProfile = allProfiles.find(
+      (item) => item.user_id === message.sender_id
+    );
 
-          return item.listing_id === message.listing_id &&
-            itemOtherId === otherId &&
-            (item.sender_id === user.id || item.receiver_id === user.id);
-        }) === index;
-      }).map((message) => {
-        const otherId = message.sender_id === user.id
-          ? message.receiver_id
-          : message.sender_id;
-const otherProfile = allProfiles.find(
-  (item) => item.user_id === otherId
-);
-        const conversation = messages.filter((item) =>
-          item.listing_id === message.listing_id &&
-          (item.sender_id === user.id ? item.receiver_id : item.sender_id) === otherId
-        );
+    const senderName =
+      message.sender_id === user.id
+        ? profile?.display_name || "Jij"
+        : senderProfile?.display_name || "Gebruiker";
 
-        const lastMessage = conversation[conversation.length - 1];
-        const listing = listings.find((item) => item.id === message.listing_id);
+    const listing = listings.find(
+      (item) => item.id === message.listing_id
+    );
 
-        if (!listing) return null;
+    if (!listing) return null;
 
-        return (
-          <div
-            className="offer-card"
-            key={`${message.listing_id}-${otherId}`}
-            onClick={() => {
-              setSelectedListing(listing);
-              setShowInbox(false);
-              setShowChat(true);
-            }}
-            style={{ cursor: "pointer" }}
-          >
-            <strong>{otherProfile?.display_name || "Gebruiker"}</strong>
-<small>{listing.title}</small>
-            <p>{lastMessage?.body}</p>
-            <small>Open gesprek</small>
-          </div>
-        );
-      })}
-
+    return (
+      <div
+        className="offer-card"
+        key={message.id}
+        style={{ marginBottom: "12px" }}
+      >
+        <strong>{senderName}</strong>
+        <p>{message.body}</p>
+        <small>{listing.title}</small>
+        <br />
+        <small>
+          {new Date(message.created_at).toLocaleString("nl-BE")}
+        </small>
+      </div>
+    );
+  })}
+      
       {messages.filter((message) =>
         message.sender_id === user.id || message.receiver_id === user.id
       ).length === 0 && <p>Je hebt nog geen berichten.</p>}
