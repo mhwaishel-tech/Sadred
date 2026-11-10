@@ -877,7 +877,9 @@ setSelectedListing({
     <div
       className="offer-card"
       key={otherId}
-      style={{ marginBottom: "12px", cursor: "pointer" }}
+      <strong>
+  {allProfiles.find((item) => item.user_id === otherId)?.display_name || "Gebruiker"}
+</strong>
       onClick={() => {
         setSelectedChatUserId(otherId);
         setSelectedListing(listing || null);
