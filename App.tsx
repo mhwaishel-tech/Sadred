@@ -842,9 +842,6 @@ setSelectedListing({
         const otherId = message.sender_id === user.id
           ? message.receiver_id
           : message.sender_id;
-const otherProfile = allProfiles.find(
-  (item) => item.user_id === otherId
-);
         return array.findIndex((item) => {
           const itemOtherId = item.sender_id === user.id
             ? item.receiver_id
@@ -858,7 +855,9 @@ const otherProfile = allProfiles.find(
         const otherId = message.sender_id === user.id
           ? message.receiver_id
           : message.sender_id;
-
+const otherProfile = allProfiles.find(
+  (item) => item.user_id === otherId
+);
         const conversation = messages.filter((item) =>
           item.listing_id === message.listing_id &&
           (item.sender_id === user.id ? item.receiver_id : item.sender_id) === otherId
