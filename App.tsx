@@ -527,7 +527,7 @@ setSelectedListing({
   setChatText("");
   await loadData();
 }
-  }
+  
 
   const filteredListings = listings.filter((listing) => {
     const matchesSearch =
