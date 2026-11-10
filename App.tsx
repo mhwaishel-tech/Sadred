@@ -282,6 +282,120 @@ export default function App() {
     setNotice("Je opdracht is geplaatst.");
     await loadData();
   }
+    async function updateListing() {
+    if (!supabase || !user || !selectedListing) return;
+
+    if (selectedListing.user_id !== user.id) {
+      setNotice("Je mag deze opdracht niet bewerken.");
+      return;
+    }
+
+    if (!title.trim() || !city.trim() || !reward) {
+      setNotice("Vul alle verplichte velden in.");
+      return;
+    }
+
+    const imageUrls = [...(selectedListing.image_urls ?? [])];
+
+    if (imageUrls.length + selectedImages.length > 5) {
+      setNotice("Maximaal 5 foto's toegestaan.");
+      return;
+    }
+
+    for (let i = 0; i < selectedImages.length; i++) {
+      const file = selectedImages[i];
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+      const filePath = `${user.id}/${Date.now()}-${i}-${safeName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("listing-images")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        setNotice(uploadError.message);
+        return;
+      }
+
+      const { data } = supabase.storage
+        .from("listing-images")
+        .getPublicUrl(filePath);
+
+      imageUrls.push(data.publicUrl);
+    }
+
+    const { error } = await supabase
+      .from("listings")
+      .update({
+        title: title.trim(),
+        description: description.trim(),
+        category: newCategory,
+        city: city.trim(),
+        reward_eur: Number(reward),
+        image_urls: imageUrls,
+      })
+      .eq("id", selectedListing.id)
+      .eq("user_id", user.id);
+
+    if (error) {
+      setNotice(error.message);
+      return;
+    }
+
+    setShowEdit(false);
+    setSelectedImages([]);
+    setNotice("Opdracht bijgewerkt.");
+    await loadData();
+    }
+  async function deleteListing() {
+  if (!supabase || !user || !selectedListing) return;
+
+  if (selectedListing.user_id !== user.id) {
+    setNotice("Je mag deze opdracht niet verwijderen.");
+    return;
+  }
+
+  if (!window.confirm("Weet je zeker dat je deze opdracht wilt verwijderen?")) {
+    return;
+  }
+
+  const marker = "/storage/v1/object/public/listing-images/";
+
+  const paths = (selectedListing.image_urls ?? [])
+    .map((url) => {
+      const index = url.indexOf(marker);
+      if (index === -1) return null;
+      return decodeURIComponent(url.slice(index + marker.length));
+    })
+    .filter((path): path is string => Boolean(path));
+
+  if (paths.length > 0) {
+    const { error: storageError } = await supabase.storage
+      .from("listing-images")
+      .remove(paths);
+
+    if (storageError) {
+      setNotice(storageError.message);
+      return;
+    }
+  }
+
+  const { data, error } = await supabase
+    .from("listings")
+    .delete()
+    .eq("id", selectedListing.id)
+    .eq("user_id", user.id)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) {
+    setNotice(error?.message ?? "Advertentie kon niet worden verwijderd.");
+    return;
+  }
+
+  setSelectedListing(null);
+  setNotice("Opdracht verwijderd.");
+  await loadData();
+  }
   async function submitOffer() {
     if (!supabase || !user || !selectedListing) {
       setShowLogin(true);
