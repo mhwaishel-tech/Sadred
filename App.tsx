@@ -68,6 +68,7 @@ const categories = [
 export default function App() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -157,6 +158,11 @@ export default function App() {
         .maybeSingle();
 
       setProfile(profileData as Profile | null);
+      const { data: profilesData } = await supabase
+  .from("profiles")
+  .select("*");
+
+setAllProfiles((profilesData ?? []) as Profile[]);
 
       const { data: offerData } = await supabase
         .from("offers")
@@ -836,7 +842,9 @@ setSelectedListing({
         const otherId = message.sender_id === user.id
           ? message.receiver_id
           : message.sender_id;
-
+const otherProfile = allProfiles.find(
+  (item) => item.user_id === otherId
+);
         return array.findIndex((item) => {
           const itemOtherId = item.sender_id === user.id
             ? item.receiver_id
@@ -872,7 +880,8 @@ setSelectedListing({
             }}
             style={{ cursor: "pointer" }}
           >
-            <strong>{listing.title}</strong>
+            <strong>{otherProfile?.display_name || "Gebruiker"}</strong>
+<small>{listing.title}</small>
             <p>{lastMessage?.body}</p>
             <small>Open gesprek</small>
           </div>
