@@ -967,26 +967,35 @@ setNotice("Bericht verzonden.");
     className="offer-card"
     key={n.id}
     style={{ cursor: "pointer" }}
-    onClick={() => {
-      const listing = listings.find((l) => l.id === n.listing_id);
+    onClick={async () => {
+  if (!supabase || !user) return;
 
-      if (listing) {
-        openListing(listing);
-        setShowNotifications(false);
-      } else {
-        setNotice("De advertentie is niet meer beschikbaar.");
-      }
+  const { error } = await supabase
+    .from("notifications")
+    .update({ is_read: true })
+    .eq("id", n.id)
+    .eq("user_id", user.id);
 
-      supabase?.from("notifications")
-        .update({ is_read: true })
-        .eq("id", n.id);
+  if (error) {
+    setNotice("خطأ في حفظ القراءة: " + error.message);
+    return;
+  }
 
-      setNotifications((previous) =>
-        previous.map((item) =>
-          item.id === n.id ? { ...item, is_read: true } : item
-        )
-      );
-    }}
+  setNotifications((previous) =>
+    previous.map((item) =>
+      item.id === n.id ? { ...item, is_read: true } : item
+    )
+  );
+
+  const listing = listings.find((l) => l.id === n.listing_id);
+
+  if (listing) {
+    openListing(listing);
+    setShowNotifications(false);
+  } else {
+    setNotice("De advertentie is niet meer beschikbaar.");
+  }
+}}
   >
     <p>{n.message}</p>
     <small>{new Date(n.created_at).toLocaleString("nl-BE")}</small>
