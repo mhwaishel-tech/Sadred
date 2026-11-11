@@ -138,9 +138,9 @@ export default function App() {
     loadData();
   }, [user]);
 useEffect(() => {
-  if (!supabase || !user) return;
+  const client = supabase;
 
-  const channel = supabase
+  const channel = client
     .channel(`notifications-${user.id}`)
     .on(
       "postgres_changes",
@@ -164,7 +164,7 @@ useEffect(() => {
     .subscribe();
 
   return () => {
-    supabase.removeChannel(channel);
+    client.removeChannel(channel);
   };
 }, [user]);
   async function loadData() {
