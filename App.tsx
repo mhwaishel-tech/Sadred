@@ -641,12 +641,29 @@ setNotice("Bericht verzonden.");
   className="secondary-btn"
   onClick={() => user ? setShowInbox(true) : setShowLogin(true)}
 >
-  < MessageCircle size={17} /> Berichten
-{user && messages.filter((m) => m.receiver_id === user.id && !m.is_read).length > 0 && (
-  <span style={{ color: "red", fontWeight: "bold" }}>
-    {messages.filter((m) => m.receiver_id === user.id && !m.is_read).length}
+  <span style={{ position: "relative", display: "inline-flex" }}>
+    <MessageCircle size={17} />
+    {user && messages.filter((m) => m.receiver_id === user.id && !m.is_read).length > 0 && (
+      <span style={{
+        position: "absolute",
+        top: "-9px",
+        right: "-10px",
+        background: "red",
+        color: "white",
+        borderRadius: "50%",
+        minWidth: "16px",
+        height: "16px",
+        fontSize: "10px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: "bold"
+      }}>
+        {messages.filter((m) => m.receiver_id === user.id && !m.is_read).length}
+      </span>
+    )}
   </span>
-)}
+  Berichten
 </button>
         <button
   className="secondary-btn"
@@ -654,8 +671,29 @@ setNotice("Bericht verzonden.");
 >
   <Bell size={17} /> Meldingen
   {notifications.filter((n) => !n.is_read).length > 0 && (
-    <span style={{ color: "red", fontWeight: "bold" }}>{notifications.filter((n) => !n.is_read).length}</span>
-  )}
+      <span style={{ position: "relative", display: "inline-flex" }}>
+    <Bell size={17} />
+    {notifications.filter((n) => !n.is_read).length > 0 && (
+      <span style={{
+        position: "absolute",
+        top: "-9px",
+        right: "-10px",
+        background: "red",
+        color: "white",
+        borderRadius: "50%",
+        minWidth: "16px",
+        height: "16px",
+        fontSize: "10px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: "bold"
+      }}>
+        {notifications.filter((n) => !n.is_read).length}
+      </span>
+    )}
+  </span>
+  Meldingen
 </button>
         <div className="header-actions">
           {user ? (
