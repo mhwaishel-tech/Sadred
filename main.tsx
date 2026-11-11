@@ -1,7 +1,11 @@
 import { Component, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
-
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js");
+  });
+}
 class ErrorBoundary extends Component<
   { children: ReactNode },
   { error: string | null }
