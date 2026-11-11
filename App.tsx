@@ -856,7 +856,7 @@ setSelectedListing({
       
       )
   )
-).map((chatKey) => {
+.map((chatKey) => {
   const [otherId, listingId] = chatKey.split("|||");
   const conversation = messages
   .filter(
@@ -867,7 +867,7 @@ setSelectedListing({
         (message.sender_id === otherId && message.receiver_id === user.id)
       )
   )
-    )
+    
     .sort(
       (a, b) =>
         new Date(a.created_at).getTime() -
