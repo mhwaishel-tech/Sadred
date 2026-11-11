@@ -593,6 +593,15 @@ await supabase.from("notifications").insert({
 >
   <MessageCircle size={17} /> Berichten
 </button>
+        <button
+  className="secondary-btn"
+  onClick={() => user && setNotice("Je meldingen worden geladen.")}
+>
+  <Bell size={17} /> Meldingen
+  {notifications.filter((n) => !n.is_read).length > 0 && (
+    <span>{notifications.filter((n) => !n.is_read).length}</span>
+  )}
+</button>
         <div className="header-actions">
           {user ? (
             <button onClick={handleLogout} className="secondary-btn">
