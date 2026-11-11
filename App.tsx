@@ -640,7 +640,12 @@ setNotice("Bericht verzonden.");
   className="secondary-btn"
   onClick={() => user ? setShowInbox(true) : setShowLogin(true)}
 >
-  <MessageCircle size={17} /> Berichten
+  < MessageCircle size={17} /> Berichten
+{user && messages.filter((m) => m.receiver_id === user.id && !m.is_read).length > 0 && (
+  <span style={{ color: "red", fontWeight: "bold" }}>
+    {messages.filter((m) => m.receiver_id === user.id && !m.is_read).length}
+  </span>
+)}
 </button>
         <button
   className="secondary-btn"
@@ -984,11 +989,31 @@ setNotice("Bericht verzonden.");
       className="offer-card"
       key={chatKey}
       style={{ marginBottom: "12px", cursor: "pointer" }}
-      onClick={() => {
-        setSelectedChatUserId(otherId);
-        setSelectedListing(listing || null);
-        setShowInbox(false);
-        setShowChat(true);
+     onClick={async () => {
+  setSelectedChatUserId(otherId);
+  setSelectedListing(listing || null);
+  setShowInbox(false);
+  setShowChat(true);
+
+  if (listing) {
+    await supabase
+      ?.from("messages")
+      .update({ is_read: true })
+      .eq("listing_id", listing.id)
+      .eq("sender_id", otherId)
+      .eq("receiver_id", user.id);
+
+    setMessages((previous) =>
+      previous.map((m) =>
+        m.listing_id === listing.id &&
+        m.sender_id === otherId &&
+        m.receiver_id === user.id
+          ? { ...m, is_read: true }
+          : m
+      )
+    );
+  }
+}}
       }}
     >
       <strong>{otherProfile?.display_name || "Gebruiker"}</strong> 
