@@ -1,12 +1,20 @@
+
 {
-  "name": "SadRed",
-  "short_name": "SadRed",
+  "id": "/",
+  "name": "Sad Rad",
+  "short_name": "Sad Rad",
   "description": "Geef spullen een tweede leven",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#fbfcfa",
   "theme_color": "#155e4b",
   "icons": [
-    { "src": "/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
   ]
 }
