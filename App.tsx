@@ -54,6 +54,7 @@ type ChatMessage = {
   receiver_id: string;
   body: string;
   created_at: string;
+  is_read: boolean;
 };
 
 const categories = [
