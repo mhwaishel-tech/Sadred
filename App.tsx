@@ -1018,6 +1018,23 @@ setNotice("Bericht verzonden.");
       
     >
       <strong>{otherProfile?.display_name || "Gebruiker"}</strong> 
+      {messages.filter(
+  (m) =>
+    m.sender_id === otherId &&
+    m.receiver_id === user.id &&
+    m.listing_id === listingId &&
+    !m.is_read
+).length > 0 && (
+  <span style={{ color: "red", fontWeight: "bold", marginLeft: "8px" }}>
+    {messages.filter(
+      (m) =>
+        m.sender_id === otherId &&
+        m.receiver_id === user.id &&
+        m.listing_id === listingId &&
+        !m.is_read
+    ).length}
+  </span>
+)}
       <small>{listing?.title || "Advertentie"}</small>
     </div>
   );
