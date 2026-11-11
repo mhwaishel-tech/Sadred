@@ -14,7 +14,7 @@ import {
   MessageCircle,
   Star,
   Package,
-  User,
+  User,Bell,
 } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "./supabase";
 
@@ -71,7 +71,9 @@ export default function App() {
   const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
+  
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Alles");
@@ -177,6 +179,13 @@ setAllProfiles((profilesData ?? []) as Profile[]);
         .order("created_at", { ascending: true });
 
       setMessages((messageData ?? []) as ChatMessage[]);
+      const { data: notificationData } = await supabase
+  .from("notifications")
+  .select("*")
+  .eq("user_id", user.id)
+  .order("created_at", { ascending: false });
+
+setNotifications(notificationData ?? []);
     } else {
       setProfile(null);
       setOffers([]);
@@ -455,7 +464,12 @@ setSelectedListing({
       setNotice(error.message);
       return;
     }
-
+await supabase.from("notifications").insert({
+  user_id: selectedListing.user_id,
+  listing_id: selectedListing.id,
+  type: "offer",
+  message: "Je hebt een nieuw aanbod ontvangen.",
+});
     setOfferAmount("");
     setOfferMessage("");
     setShowOffer(false);
@@ -523,7 +537,12 @@ setSelectedListing({
     setNotice("Bericht verzenden mislukt.");
     return;
   }
-
+await supabase.from("notifications").insert({
+  user_id: receiverId,
+  listing_id: selectedListing.id,
+  type: "message",
+  message: "Je hebt een nieuw bericht ontvangen.",
+});
   setChatText("");
   await loadData();
 }
