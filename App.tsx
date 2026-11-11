@@ -964,7 +964,7 @@ setNotice("Bericht verzonden.");
       </button>
       <h2><Bell /> Meldingen</h2>
       
-      {{notifications.map((n) => (
+      {notifications.map((n) => (
   <div
     className="offer-card"
     key={n.id}
