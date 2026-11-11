@@ -496,6 +496,7 @@ setSelectedListing({
     }
 await supabase.from("notifications").insert({
   user_id: selectedListing.user_id,
+  title: "Nieuw aanbod",
   listing_id: selectedListing.id,
   type: "offer",
   message: "Je hebt een nieuw aanbod ontvangen.",
@@ -569,6 +570,7 @@ await supabase.from("notifications").insert({
   }
 await supabase.from("notifications").insert({
   user_id: receiverId,
+  title: "Nieuw bericht",
   listing_id: selectedListing.id,
   type: "message",
   message: "Je hebt een nieuw bericht ontvangen.",
