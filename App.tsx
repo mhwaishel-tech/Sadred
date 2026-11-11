@@ -114,7 +114,15 @@ export default function App() {
   const [offerMessage, setOfferMessage] = useState("");
   const [chatText, setChatText] = useState("");
   const [notice, setNotice] = useState("");
+useEffect(() => {
+  if (!notice) return;
 
+  const timer = setTimeout(() => {
+    setNotice("");
+  }, 3000);
+
+  return () => clearTimeout(timer);
+}, [notice]);
   useEffect(() => {
     if (!supabase) {
       setLoading(false);
