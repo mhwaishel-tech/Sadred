@@ -963,7 +963,7 @@ setNotice("Bericht verzonden.");
         <X />
       </button>
       <h2><Bell /> Meldingen</h2>
-      {notifications.length === 0 ? (
+      
         {notifications.length === 0 ? (
   <p>Je hebt nog geen meldingen.</p>
 ) : (
