@@ -74,6 +74,7 @@ export default function App() {
   
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Alles");
@@ -595,7 +596,7 @@ await supabase.from("notifications").insert({
 </button>
         <button
   className="secondary-btn"
-  onClick={() => user && setNotice("Je meldingen worden geladen.")}
+  onClick={() => user && setShowNotifications(true)}
 >
   <Bell size={17} /> Meldingen
   {notifications.filter((n) => !n.is_read).length > 0 && (
@@ -857,7 +858,26 @@ await supabase.from("notifications").insert({
       )}
       
             
-    
+    {showNotifications && user && (
+  <div className="modal-backdrop" onClick={() => setShowNotifications(false)}>
+    <div className="modal" onClick={(event) => event.stopPropagation()}>
+      <button className="close-btn" onClick={() => setShowNotifications(false)}>
+        <X />
+      </button>
+      <h2><Bell /> Meldingen</h2>
+      {notifications.length === 0 ? (
+        <p>Je hebt nog geen meldingen.</p>
+      ) : (
+        notifications.map((n) => (
+          <div className="offer-card" key={n.id}>
+            <p>{n.message}</p>
+            <small>{new Date(n.created_at).toLocaleString("nl-BE")}</small>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+)}
       {showInbox && user && (
   <div className="modal-backdrop" onClick={() => setShowInbox(false)}>
     <div className="modal" onClick={(event) => event.stopPropagation()}>
