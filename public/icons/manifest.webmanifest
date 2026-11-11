@@ -1,0 +1,25 @@
+{
+  "id": "/",
+  "name": "Sad Rad",
+  "short_name": "Sad Rad",
+  "description": "Geef spullen een tweede leven",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fbfcfa",
+  "theme_color": "#155e4b",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
