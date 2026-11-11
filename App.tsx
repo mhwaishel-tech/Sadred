@@ -139,7 +139,7 @@ export default function App() {
   }, [user]);
 useEffect(() => {
   const client = supabase;
-
+if (!client || !user) return;
   const channel = client
     .channel(`notifications-${user.id}`)
     .on(
