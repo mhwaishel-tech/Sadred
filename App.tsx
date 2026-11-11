@@ -137,7 +137,36 @@ export default function App() {
   useEffect(() => {
     loadData();
   }, [user]);
+useEffect(() => {
+  if (!supabase || !user) return;
 
+  const channel = supabase
+    .channel(`notifications-${user.id}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "notifications",
+        filter: `user_id=eq.${user.id}`,
+      },
+      (payload) => {
+        const newNotification = payload.new as any;
+
+        setNotifications((previous) => [
+          newNotification,
+          ...previous,
+        ]);
+
+        setNotice(newNotification.message);
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, [user]);
   async function loadData() {
     if (!supabase) return;
 
