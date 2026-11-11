@@ -586,8 +586,12 @@ const { error: notificationError } = await supabase
   });
 
 if (notificationError) {
-  setNotice("Notification error: " + notificationError.message);
-  return;
+  setNotice("Bericht verzonden, maar melding mislukt: " + notificationError.message);
+}
+
+setChatText("");
+await loadData();
+setNotice("Bericht verzonden.");
 }
 }
   
