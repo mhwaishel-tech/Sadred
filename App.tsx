@@ -727,9 +727,7 @@ setNotice("Bericht verzonden.");
       {notice && (
         <div className="notice">
           {notice}
-          <button onClick={() => setNotice("")}>
-            <X size={16} />
-          </button>
+          
         </div>
       )}
 
