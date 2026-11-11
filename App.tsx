@@ -958,11 +958,35 @@ setNotice("Bericht verzonden.");
       {notifications.length === 0 ? (
         <p>Je hebt nog geen meldingen.</p>
       ) : (
-        notifications.map((n) => (
-          <div className="offer-card" key={n.id}>
-            <p>{n.message}</p>
-            <small>{new Date(n.created_at).toLocaleString("nl-BE")}</small>
-          </div>
+        <div
+  className="offer-card"
+  key={n.id}
+  style={{ cursor: "pointer" }}
+  onClick={async () => {
+    const listing = listings.find((l) => l.id === n.listing_id);
+
+    if (listing) {
+      openListing(listing);
+      setShowNotifications(false);
+    } else {
+      setNotice("De advertentie is niet meer beschikbaar.");
+    }
+
+    await supabase
+      ?.from("notifications")
+      .update({ is_read: true })
+      .eq("id", n.id);
+
+    setNotifications((previous) =>
+      previous.map((item) =>
+        item.id === n.id ? { ...item, is_read: true } : item
+      )
+    );
+  }}
+>
+  <p>{n.message}</p>
+  <small>{new Date(n.created_at).toLocaleString("nl-BE")}</small>
+</div>
         ))
       )}
     </div>
