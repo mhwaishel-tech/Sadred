@@ -1114,7 +1114,7 @@ setNotice("Bericht verzonden.");
             </button>
           </div>
         </div>
-      )}
+      
 
       {enlargedImage && (
         <div
