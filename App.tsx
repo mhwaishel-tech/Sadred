@@ -1014,7 +1014,7 @@ setNotice("Bericht verzonden.");
     );
   }
 }}
-      }}
+      
     >
       <strong>{otherProfile?.display_name || "Gebruiker"}</strong> 
       <small>{listing?.title || "Advertentie"}</small>
