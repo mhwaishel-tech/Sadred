@@ -494,13 +494,20 @@ setSelectedListing({
       setNotice(error.message);
       return;
     }
-await supabase.from("notifications").insert({
-  user_id: selectedListing.user_id,
-  title: "Nieuw aanbod",
-  listing_id: selectedListing.id,
-  type: "offer",
-  message: "Je hebt een nieuw aanbod ontvangen.",
-});
+const { error: notificationError } = await supabase
+  .from("notifications")
+  .insert({
+    user_id: selectedListing.user_id,
+    title: "Nieuw aanbod",
+    listing_id: selectedListing.id,
+    type: "offer",
+    message: "Je hebt een nieuw aanbod ontvangen.",
+  });
+
+if (notificationError) {
+  setNotice("Notification error: " + notificationError.message);
+  return;
+}
     setOfferAmount("");
     setOfferMessage("");
     setShowOffer(false);
@@ -568,15 +575,20 @@ await supabase.from("notifications").insert({
     setNotice("Bericht verzenden mislukt.");
     return;
   }
-await supabase.from("notifications").insert({
-  user_id: receiverId,
-  title: "Nieuw bericht",
-  listing_id: selectedListing.id,
-  type: "message",
-  message: "Je hebt een nieuw bericht ontvangen.",
-});
-  setChatText("");
-  await loadData();
+const { error: notificationError } = await supabase
+  .from("notifications")
+  .insert({
+    user_id: receiverId,
+    title: "Nieuw bericht",
+    listing_id: selectedListing.id,
+    type: "message",
+    message: "Je hebt een nieuw bericht ontvangen.",
+  });
+
+if (notificationError) {
+  setNotice("Notification error: " + notificationError.message);
+  return;
+}
 }
   
 
