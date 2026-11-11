@@ -159,6 +159,7 @@ if (!client || !user) return;
         ]);
 
         setNotice(newNotification.message);
+        loadData();
       }
     )
     .subscribe();
@@ -647,7 +648,7 @@ setNotice("Bericht verzonden.");
 >
   <Bell size={17} /> Meldingen
   {notifications.filter((n) => !n.is_read).length > 0 && (
-    <span>{notifications.filter((n) => !n.is_read).length}</span>
+    <span style={{ color: "red", fontWeight: "bold" }}>{notifications.filter((n) => !n.is_read).length}</span>
   )}
 </button>
         <div className="header-actions">
