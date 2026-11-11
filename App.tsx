@@ -958,6 +958,7 @@ setNotice("Bericht verzonden.");
       {notifications.length === 0 ? (
         <p>Je hebt nog geen meldingen.</p>
       ) : (
+    notifications.map((n) => (
         <div
   className="offer-card"
   key={n.id}
