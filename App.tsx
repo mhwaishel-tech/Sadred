@@ -593,7 +593,7 @@ setChatText("");
 await loadData();
 setNotice("Bericht verzonden.");
 }
-}
+
   
 
   const filteredListings = listings.filter((listing) => {
