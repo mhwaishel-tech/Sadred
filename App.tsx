@@ -740,11 +740,14 @@ setNotice("Bericht verzonden.");
   onClick={async () => {
     const OneSignal = (window as any).__sadRadOneSignal;
 
-    if (!OneSignal) 
+    if (!OneSignal) {
   const error = (window as any).__sadRadOneSignalError;
-  setNotice(error ? "OneSignal-fout: " + error : "OneSignal wordt nog geladen. Vernieuw de pagina.");
+  setNotice(
+    error
+      ? "OneSignal-fout: " + error
+      : "OneSignal wordt nog geladen. Vernieuw de pagina."
+  );
   return;
-    }
     }
 
     try {
