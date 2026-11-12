@@ -142,7 +142,18 @@ useEffect(() => {
 
     return () => listener.subscription.unsubscribe();
   }, []);
+  useEffect(() => {
+    if (!user?.id) return;
 
+    (window as any).OneSignalDeferred =
+      (window as any).OneSignalDeferred || [];
+
+    (window as any).OneSignalDeferred.push(
+      async (OneSignal: any) => {
+        await OneSignal.login(user.id);
+      }
+    );
+  }, [user?.id]);
   useEffect(() => {
     loadData();
   }, [user]);
