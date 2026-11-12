@@ -741,8 +741,10 @@ setNotice("Bericht verzonden.");
     const OneSignal = (window as any).__sadRadOneSignal;
 
     if (!OneSignal) {
-      setNotice("OneSignal is nog niet geladen. Vernieuw de pagina.");
-      return;
+  const error = (window as any).__sadRadOneSignalError;
+  setNotice(error ? "OneSignal-fout: " + error : "OneSignal wordt nog geladen. Vernieuw de pagina.");
+  return;
+    }
     }
 
     try {
