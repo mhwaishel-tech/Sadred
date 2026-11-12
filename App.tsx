@@ -734,6 +734,7 @@ setNotice("Bericht verzonden.");
           </button>
         </div>
       </header>
+
 <button
   className="secondary-btn"
   onClick={() => {
@@ -742,13 +743,21 @@ setNotice("Bericht verzonden.");
 
     (window as any).OneSignalDeferred.push(
       async (OneSignal: any) => {
-        await OneSignal.User.PushSubscription.optIn();
+        try {
+          await OneSignal.Notifications.requestPermission();
+          if (OneSignal.Notifications.permission) {
+            await OneSignal.User.PushSubscription.optIn();
+          }
+        } catch (error) {
+          console.error("OneSignal error:", error);
+        }
       }
     );
   }}
 >
   Schakel meldingen in
 </button>
+      
       {notice && (
         <div className="notice">
           {notice}
