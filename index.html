@@ -10,14 +10,23 @@
     <title>SadRed – Geef spullen een tweede leven</title>
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
+  window.__sadRadOneSignalError = null;
   window.OneSignalDeferred = window.OneSignalDeferred || [];
+
   OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "6107e207-61ab-4eaf-ad12-292c05e7a580",
-      serviceWorkerPath: "/sw.js",
-      serviceWorkerParam: { scope: "/" }
-    });
-    window.__sadRadOneSignal = OneSignal;
+    try {
+      await OneSignal.init({
+        appId: "6107e207-61ab-4eaf-ad12-292c05e7a580",
+        serviceWorkerPath: "/sw.js",
+        serviceWorkerParam: { scope: "/" }
+      });
+
+      window.__sadRadOneSignal = OneSignal;
+    } catch (error) {
+      window.__sadRadOneSignalError =
+        error && error.message ? error.message : String(error);
+      console.error("OneSignal init failed:", error);
+    }
   });
 </script>
   </head>
