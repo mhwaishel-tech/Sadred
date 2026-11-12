@@ -742,7 +742,7 @@ setNotice("Bericht verzonden.");
 
     (window as any).OneSignalDeferred.push(
       async (OneSignal: any) => {
-        await OneSignal.Notifications.requestPermission();
+        await OneSignal.User.PushSubscription.optIn();
       }
     );
   }}
