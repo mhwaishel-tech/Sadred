@@ -734,7 +734,21 @@ setNotice("Bericht verzonden.");
           </button>
         </div>
       </header>
+<button
+  className="secondary-btn"
+  onClick={() => {
+    (window as any).OneSignalDeferred =
+      (window as any).OneSignalDeferred || [];
 
+    (window as any).OneSignalDeferred.push(
+      async (OneSignal: any) => {
+        await OneSignal.Notifications.requestPermission();
+      }
+    );
+  }}
+>
+  Schakel meldingen in
+</button>
       {notice && (
         <div className="notice">
           {notice}
