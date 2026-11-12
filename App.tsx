@@ -737,23 +737,30 @@ setNotice("Bericht verzonden.");
 
 <button
   className="secondary-btn"
-  onClick={() => {
+  onClick={async () => {
+    const OneSignal = (window as any).__sadRadOneSignal;
 
-    (window as any).OneSignalDeferred =
-      (window as any).OneSignalDeferred || [];
+    if (!OneSignal) {
+      setNotice("OneSignal is nog niet geladen. Vernieuw de pagina.");
+      return;
+    }
 
-    (window as any).OneSignalDeferred.push(
-      async (OneSignal: any) => {
-        try {
-          await OneSignal.Notifications.requestPermission();
-          if (OneSignal.Notifications.permission) {
-            await OneSignal.User.PushSubscription.optIn();
-          }
-        } catch (error) {
-          console.error("OneSignal error:", error);
-        }
+    try {
+      await OneSignal.Notifications.requestPermission();
+
+      if (
+        Notification.permission === "granted" ||
+        OneSignal.Notifications.permission
+      ) {
+        await OneSignal.User.PushSubscription.optIn();
+        setNotice("Meldingen zijn ingeschakeld.");
+      } else {
+        setNotice("Toestemming voor meldingen is niet gegeven.");
       }
-    );
+    } catch (error: any) {
+      console.error("OneSignal error:", error);
+      setNotice("Fout bij meldingen: " + (error?.message || String(error)));
+    }
   }}
 >
   Schakel meldingen in
