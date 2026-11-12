@@ -738,7 +738,7 @@ setNotice("Bericht verzonden.");
 <button
   className="secondary-btn"
   onClick={() => {
-    alert("Button clicked");
+
     (window as any).OneSignalDeferred =
       (window as any).OneSignalDeferred || [];
 
