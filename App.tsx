@@ -790,6 +790,33 @@ setNotice("Bericht verzonden.");
     <button onClick={() => { setShowMenu(false); setShowSettings(true); }}>
       Instellingen
     </button>
+    <button onClick={async () => {
+  setShowMenu(false);
+  const OneSignal = (window as any).__sadRadOneSignal;
+
+  if (!OneSignal) {
+    setNotice("OneSignal wordt nog geladen. Vernieuw de pagina.");
+    return;
+  }
+
+  try {
+    await OneSignal.Notifications.requestPermission();
+
+    if (
+      Notification.permission === "granted" ||
+      OneSignal.Notifications.permission
+    ) {
+      await OneSignal.User.PushSubscription.optIn();
+      setNotice("Meldingen zijn ingeschakeld.");
+    } else {
+      setNotice("Toestemming voor meldingen is niet gegeven.");
+    }
+  } catch (error: any) {
+    setNotice("Fout bij meldingen: " + (error?.message || String(error)));
+  }
+}}>
+  Schakel meldingen in
+</button>
     {user ? (
   <button onClick={() => { setShowMenu(false); handleLogout(); }}>
     <LogOut size={17} /> Uitloggen
@@ -804,41 +831,7 @@ setNotice("Bericht verzonden.");
         
       </header>
 
-<button
-  className="secondary-btn"
-  onClick={async () => {
-    const OneSignal = (window as any).__sadRadOneSignal;
 
-    if (!OneSignal) {
-  const error = (window as any).__sadRadOneSignalError;
-  setNotice(
-    error
-      ? "OneSignal-fout: " + error
-      : "OneSignal wordt nog geladen. Vernieuw de pagina."
-  );
-  return;
-    }
-
-    try {
-      await OneSignal.Notifications.requestPermission();
-
-      if (
-        Notification.permission === "granted" ||
-        OneSignal.Notifications.permission
-      ) {
-        await OneSignal.User.PushSubscription.optIn();
-        setNotice("Meldingen zijn ingeschakeld.");
-      } else {
-        setNotice("Toestemming voor meldingen is niet gegeven.");
-      }
-    } catch (error: any) {
-      console.error("OneSignal error:", error);
-      setNotice("Fout bij meldingen: " + (error?.message || String(error)));
-    }
-  }}
->
-  Schakel meldingen in
-</button>
       
       {notice && (
         <div className="notice">
