@@ -681,25 +681,7 @@ setNotice("Bericht verzonden.");
     </button>
   </div>
 )}
-{showMenu && (
-  <div className="menu-dropdown">
-    <button onClick={() => { setShowMenu(false); setShowEdit(true); }}>
-      Mijn profiel
-    </button>
-    <button onClick={() => { setShowMenu(false); }}>
-      Mijn opdrachten
-    </button>
-    <button onClick={() => { setShowMenu(false); }}>
-      Mijn beoordelingen
-    </button>
-    <button onClick={() => { setShowMenu(false); }}>
-      Instellingen
-    </button>
-    <button onClick={() => { setShowMenu(false); handleLogout(); }}>
-      Uitloggen
-    </button>
-  </div>
-)}
+
         <nav>
           <a href="#opdrachten">Opdrachten</a>
           <a href="#hoe-werkt-het">Hoe werkt het?</a>
@@ -1452,6 +1434,31 @@ setNotice("Bericht verzonden.");
       <button className="primary-btn full-btn" onClick={() => setShowProfile(false)}>
         Sluiten
       </button>
+    </div>
+  </div>
+)}
+      {showMyListings && (
+  <div className="modal-backdrop" onClick={() => setShowMyListings(false)}>
+    <div className="modal" onClick={(event) => event.stopPropagation()}>
+      <button className="close-btn" onClick={() => setShowMyListings(false)}>
+        <X />
+      </button>
+
+      <h2>Mijn opdrachten</h2>
+
+      {listings.filter((item) => item.user_id === user?.id).length === 0 ? (
+        <p>Je hebt nog geen opdrachten geplaatst.</p>
+      ) : (
+        listings
+          .filter((item) => item.user_id === user?.id)
+          .map((item) => (
+            <div key={item.id}>
+              <h3>{item.title}</h3>
+              <p>{item.city} — €{item.reward_eur}</p>
+              <p>Status: {item.status}</p>
+            </div>
+          ))
+      )}
     </div>
   </div>
 )}
