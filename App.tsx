@@ -738,7 +738,6 @@ setNotice("Bericht verzonden.");
       </span>
     )}
   </span>
-  Berichten
 </button>
         <button
   className="secondary-btn"
@@ -766,7 +765,7 @@ setNotice("Bericht verzonden.");
       </span>
     )}
   </span>
-  Meldingen
+
 </button>
         <div className="header-actions">
         </div>
@@ -1670,28 +1669,7 @@ setNotice("Bericht verzonden.");
   </div>
   
 )}
-      <button
-  onClick={() => user ? setShowInbox(true) : setShowLogin(true)}
-  style={{
-    position: "fixed",
-    bottom: "20px",
-    right: "20px",
-    width: "60px",
-    height: "60px",
-    borderRadius: "50%",
-    background: "#16a34a",
-    color: "white",
-    border: "none",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
-    zIndex: 9999,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer"
-  }}
->
-  <MessageCircle size={28} />
-</button>
+      
       <footer className="footer">
         <a href="#" className="logo"><Recycle size={22} /> Sad Rad</a>
         <p>Geef spullen en hulp een tweede kans.</p>
