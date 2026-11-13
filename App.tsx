@@ -651,7 +651,13 @@ setNotice("Bericht verzonden.");
         <a href="#" className="logo">
           <Recycle size={28} />
           <span>Sad Rad</span>
-        </a>
+        </a><button
+  className="secondary-btn"
+  onClick={() => setShowMenu(!showMenu)}
+  aria-label="Menu"
+>
+  <EllipsisVertical size={22} />
+</button>
 
         <nav>
           <a href="#opdrachten">Opdrachten</a>
