@@ -44,6 +44,7 @@ type Profile = {
   user_id: string;
   display_name: string | null;
   city: string | null;
+  phone: string | null;
   role: string;
 };
 
@@ -81,6 +82,11 @@ export default function App() {
 const [showMyListings, setShowMyListings] = useState(false);
 const [showMyReviews, setShowMyReviews] = useState(false);
 const [showSettings, setShowSettings] = useState(false);
+  const [settingsName, setSettingsName] = useState("");
+const [settingsCity, setSettingsCity] = useState("");
+const [settingsPhone, setSettingsPhone] = useState("");
+const [newPassword, setNewPassword] = useState("");
+const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Alles");
@@ -217,6 +223,9 @@ if (!client || !user) return;
         .maybeSingle();
 
       setProfile(profileData as Profile | null);
+      setSettingsName(profileData?.display_name ?? "");
+setSettingsCity(profileData?.city ?? "");
+setSettingsPhone(profileData?.phone ?? "");
       const { data: profilesData } = await supabase
   .from("profiles")
   .select("*");
@@ -303,6 +312,38 @@ setNotifications(notificationData ?? []);
 
     await supabase.auth.signOut();
     setNotice("Je bent uitgelogd.");
+  }
+  async function saveSettings() {
+  if (!supabase || !user) return;
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      display_name: settingsName,
+      city: settingsCity,
+      phone: settingsPhone,
+    })
+    .eq("user_id", user.id);
+
+  if (error) {
+    setNotice(error.message);
+    return;
+  }
+
+  if (newPassword.trim()) {
+    const { error: passwordError } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (passwordError) {
+      setNotice(passwordError.message);
+      return;
+    }
+  }
+
+  setNotice("Instellingen opgeslagen.");
+  setNewPassword("");
+  await loadData();
   }
   async function createListing() {
     if (!supabase || !user) {
@@ -1493,6 +1534,60 @@ setNotice("Bericht verzonden.");
     </div>
   </div>
 )}     
+      {showSettings && (
+  <div className="modal-backdrop" onClick={() => setShowSettings(false)}>
+    <div className="modal" onClick={(event) => event.stopPropagation()}>
+      <button className="close-btn" onClick={() => setShowSettings(false)}>
+        <X />
+      </button>
+
+      <h2>Instellingen</h2>
+
+      <label>Naam</label>
+      <input
+        value={settingsName}
+        onChange={(event) => setSettingsName(event.target.value)}
+        placeholder="Naam"
+      />
+
+      <label>Stad</label>
+      <input
+        value={settingsCity}
+        onChange={(event) => setSettingsCity(event.target.value)}
+        placeholder="Stad"
+      />
+
+      <label>Telefoonnummer</label>
+      <input
+        type="tel"
+        value={settingsPhone}
+        onChange={(event) => setSettingsPhone(event.target.value)}
+        placeholder="Telefoonnummer"
+      />
+
+      <label>Nieuw wachtwoord</label>
+      <input
+        type="password"
+        value={newPassword}
+        onChange={(event) => setNewPassword(event.target.value)}
+        placeholder="Nieuw wachtwoord"
+      />
+
+      <label>
+        <input
+          type="checkbox"
+          checked={notificationsEnabled}
+          onChange={(event) => setNotificationsEnabled(event.target.checked)}
+        />
+        Meldingen inschakelen
+      </label>
+
+      <button className="primary-btn full-btn" onClick={saveSettings}>
+        Instellingen opslaan
+      </button>
+    </div>
+  </div>
+)}
 {showEdit && selectedListing && (
   <div className="modal-backdrop" onClick={() => setShowEdit(false)}>
     <div className="modal" onClick={(event) => event.stopPropagation()}>
