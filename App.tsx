@@ -14,7 +14,7 @@ import {
   MessageCircle,
   Star,
   Package,
-  User,Bell,
+  User, Bell, EllipsisVertical,
 } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "./supabase";
 
@@ -72,10 +72,11 @@ export default function App() {
   const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
-  
+  const [showMenu, setShowMenu] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Alles");
