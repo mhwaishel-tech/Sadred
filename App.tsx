@@ -72,7 +72,7 @@ export default function App() {
   const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
-  
+  const [reviews, setReviews] = useState<any[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -228,6 +228,13 @@ setAllProfiles((profilesData ?? []) as Profile[]);
         .select("*");
 
       setOffers((offerData ?? []) as Offer[]);
+      const { data: reviewData } = await supabase
+  .from("reviews")
+  .select("*")
+  .eq("reviewee_id", user.id)
+  .order("created_at", { ascending: false });
+
+setReviews(reviewData ?? []);
 
       const { data: messageData } = await supabase
         .from("messages")
@@ -1462,6 +1469,30 @@ setNotice("Bericht verzonden.");
     </div>
   </div>
 )}
+ {showMyReviews && (
+  <div className="modal-backdrop" onClick={() => setShowMyReviews(false)}>
+    <div className="modal" onClick={(event) => event.stopPropagation()}>
+      <button className="close-btn" onClick={() => setShowMyReviews(false)}>
+        <X />
+      </button>
+
+      <h2>Mijn beoordelingen</h2>
+
+      {reviews.length === 0 ? (
+        <p>Je hebt nog geen beoordelingen ontvangen.</p>
+      ) : (
+        reviews.map((item) => (
+          <div key={item.id}>
+            <p>⭐ {item.rating} / 5</p>
+            <p>{item.review || item.comment}</p>
+            <p>{new Date(item.created_at).toLocaleDateString("nl-BE")}</p>
+            <hr />
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+)}     
 {showEdit && selectedListing && (
   <div className="modal-backdrop" onClick={() => setShowEdit(false)}>
     <div className="modal" onClick={(event) => event.stopPropagation()}>
