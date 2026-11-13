@@ -77,6 +77,10 @@ export default function App() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+const [showMyListings, setShowMyListings] = useState(false);
+const [showMyReviews, setShowMyReviews] = useState(false);
+const [showSettings, setShowSettings] = useState(false);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Alles");
@@ -658,7 +662,44 @@ setNotice("Bericht verzonden.");
 >
   <EllipsisVertical size={22} />
 </button>
-
+        {showMenu && (
+  <div className="menu-dropdown">
+    <button onClick={() => { setShowMenu(false); setShowProfile(true); }}>
+      Mijn profiel
+    </button>
+    <button onClick={() => { setShowMenu(false); setShowMyListings(true); }}>
+      Mijn opdrachten
+    </button>
+    <button onClick={() => { setShowMenu(false); setShowMyReviews(true); }}>
+      Mijn beoordelingen
+    </button>
+    <button onClick={() => { setShowMenu(false); setShowSettings(true); }}>
+      Instellingen
+    </button>
+    <button onClick={() => { setShowMenu(false); handleLogout(); }}>
+      Uitloggen
+    </button>
+  </div>
+)}
+{showMenu && (
+  <div className="menu-dropdown">
+    <button onClick={() => { setShowMenu(false); setShowEdit(true); }}>
+      Mijn profiel
+    </button>
+    <button onClick={() => { setShowMenu(false); }}>
+      Mijn opdrachten
+    </button>
+    <button onClick={() => { setShowMenu(false); }}>
+      Mijn beoordelingen
+    </button>
+    <button onClick={() => { setShowMenu(false); }}>
+      Instellingen
+    </button>
+    <button onClick={() => { setShowMenu(false); handleLogout(); }}>
+      Uitloggen
+    </button>
+  </div>
+)}
         <nav>
           <a href="#opdrachten">Opdrachten</a>
           <a href="#hoe-werkt-het">Hoe werkt het?</a>
@@ -1395,6 +1436,25 @@ setNotice("Bericht verzonden.");
           </div>
         </div>
       )}
+      {showProfile && (
+  <div className="modal-backdrop" onClick={() => setShowProfile(false)}>
+    <div className="modal" onClick={(event) => event.stopPropagation()}>
+      <button className="close-btn" onClick={() => setShowProfile(false)}>
+        <X />
+      </button>
+
+      <h2>Mijn profiel</h2>
+
+      <p><strong>Naam:</strong> {profile?.display_name || "Niet ingevuld"}</p>
+      <p><strong>Stad:</strong> {profile?.city || "Niet ingevuld"}</p>
+      <p><strong>Account:</strong> {user?.email}</p>
+
+      <button className="primary-btn full-btn" onClick={() => setShowProfile(false)}>
+        Sluiten
+      </button>
+    </div>
+  </div>
+)}
 {showEdit && selectedListing && (
   <div className="modal-backdrop" onClick={() => setShowEdit(false)}>
     <div className="modal" onClick={(event) => event.stopPropagation()}>
