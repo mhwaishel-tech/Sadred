@@ -790,30 +790,27 @@ setNotice("Bericht verzonden.");
     <button onClick={() => { setShowMenu(false); setShowSettings(true); }}>
       Instellingen
     </button>
-    <button onClick={async () => {
+    <button onClick={() => {
   setShowMenu(false);
-  const OneSignal = (window as any).__sadRadOneSignal;
 
-  if (!OneSignal) {
-    setNotice("OneSignal wordt nog geladen. Vernieuw de pagina.");
-    return;
-  }
+  const deferred =
+    (window as any).OneSignalDeferred =
+    (window as any).OneSignalDeferred || [];
 
-  try {
-    await OneSignal.Notifications.requestPermission();
+  deferred.push(async (OneSignal: any) => {
+    try {
+      await OneSignal.Notifications.requestPermission();
 
-    if (
-      Notification.permission === "granted" ||
-      OneSignal.Notifications.permission
-    ) {
-      await OneSignal.User.PushSubscription.optIn();
-      setNotice("Meldingen zijn ingeschakeld.");
-    } else {
-      setNotice("Toestemming voor meldingen is niet gegeven.");
+      if (Notification.permission === "granted") {
+        await OneSignal.User.PushSubscription.optIn();
+        setNotice("Meldingen zijn ingeschakeld.");
+      } else {
+        setNotice("Toestemming voor meldingen is niet gegeven.");
+      }
+    } catch (error: any) {
+      setNotice("Fout bij meldingen: " + (error?.message || String(error)));
     }
-  } catch (error: any) {
-    setNotice("Fout bij meldingen: " + (error?.message || String(error)));
-  }
+  });
 }}>
   Schakel meldingen in
 </button>
