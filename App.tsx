@@ -46,6 +46,7 @@ type Profile = {
   city: string | null;
   phone: string | null;
   role: string;
+  notifications_enabled: boolean | null;
 };
 
 type ChatMessage = {
@@ -226,6 +227,7 @@ if (!client || !user) return;
       setSettingsName(profileData?.display_name ?? "");
 setSettingsCity(profileData?.city ?? "");
 setSettingsPhone(profileData?.phone ?? "");
+      setNotificationsEnabled(profileData?.notifications_enabled ?? true);
       const { data: profilesData } = await supabase
   .from("profiles")
   .select("*");
@@ -322,6 +324,7 @@ setNotifications(notificationData ?? []);
       display_name: settingsName,
       city: settingsCity,
       phone: settingsPhone,
+      notifications_enabled: notificationsEnabled,
     })
     .eq("user_id", user.id);
 
