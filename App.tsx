@@ -706,6 +706,7 @@ setNotice("Bericht verzonden.");
         <a href="#" className="logo">
           <Recycle size={28} />
           <span>Sad Rad</span>
+          </a>
         
         <nav>
           <a href="#opdrachten">Opdrachten</a>
@@ -768,25 +769,7 @@ setNotice("Bericht verzonden.");
   Meldingen
 </button>
         <div className="header-actions">
-          {user ? (
-            <button onClick={handleLogout} className="secondary-btn">
-              <LogOut size={17} /> Uitloggen
-            </button>
-          ) : (
-            <button
-              onClick={() => setShowLogin(true)}
-              className="secondary-btn"
-            >
-              <LogIn size={17} /> Inloggen
-            </button>
-          )}
 
-          <button
-            onClick={() => (user ? setShowCreate(true) : setShowLogin(true))}
-            className="primary-btn"
-          >
-            <Plus size={17} /> Opdracht plaatsen
-          </button>
         </div>
           </a><button
   className="secondary-btn"
@@ -809,9 +792,15 @@ setNotice("Bericht verzonden.");
     <button onClick={() => { setShowMenu(false); setShowSettings(true); }}>
       Instellingen
     </button>
-    <button onClick={() => { setShowMenu(false); handleLogout(); }}>
-      Uitloggen
-    </button>
+    {user ? (
+  <button onClick={() => { setShowMenu(false); handleLogout(); }}>
+    <LogOut size={17} /> Uitloggen
+  </button>
+) : (
+  <button onClick={() => { setShowMenu(false); setShowLogin(true); }}>
+    <LogIn size={17} /> Inloggen
+  </button>
+)}
   </div>
 )}
         
