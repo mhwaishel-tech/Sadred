@@ -769,9 +769,8 @@ setNotice("Bericht verzonden.");
   Meldingen
 </button>
         <div className="header-actions">
-
         </div>
-          </a><button
+          <button
   className="secondary-btn"
   onClick={() => setShowMenu(!showMenu)}
   aria-label="Menu"
