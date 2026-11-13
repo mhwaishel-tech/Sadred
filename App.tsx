@@ -706,33 +706,7 @@ setNotice("Bericht verzonden.");
         <a href="#" className="logo">
           <Recycle size={28} />
           <span>Sad Rad</span>
-        </a><button
-  className="secondary-btn"
-  onClick={() => setShowMenu(!showMenu)}
-  aria-label="Menu"
->
-  <EllipsisVertical size={22} />
-</button>
-        {showMenu && (
-  <div className="menu-dropdown">
-    <button onClick={() => { setShowMenu(false); setShowProfile(true); }}>
-      Mijn profiel
-    </button>
-    <button onClick={() => { setShowMenu(false); setShowMyListings(true); }}>
-      Mijn opdrachten
-    </button>
-    <button onClick={() => { setShowMenu(false); setShowMyReviews(true); }}>
-      Mijn beoordelingen
-    </button>
-    <button onClick={() => { setShowMenu(false); setShowSettings(true); }}>
-      Instellingen
-    </button>
-    <button onClick={() => { setShowMenu(false); handleLogout(); }}>
-      Uitloggen
-    </button>
-  </div>
-)}
-
+        
         <nav>
           <a href="#opdrachten">Opdrachten</a>
           <a href="#hoe-werkt-het">Hoe werkt het?</a>
@@ -814,6 +788,33 @@ setNotice("Bericht verzonden.");
             <Plus size={17} /> Opdracht plaatsen
           </button>
         </div>
+          </a><button
+  className="secondary-btn"
+  onClick={() => setShowMenu(!showMenu)}
+  aria-label="Menu"
+>
+  <EllipsisVertical size={22} />
+</button>
+        {showMenu && (
+  <div className="menu-dropdown">
+    <button onClick={() => { setShowMenu(false); setShowProfile(true); }}>
+      Mijn profiel
+    </button>
+    <button onClick={() => { setShowMenu(false); setShowMyListings(true); }}>
+      Mijn opdrachten
+    </button>
+    <button onClick={() => { setShowMenu(false); setShowMyReviews(true); }}>
+      Mijn beoordelingen
+    </button>
+    <button onClick={() => { setShowMenu(false); setShowSettings(true); }}>
+      Instellingen
+    </button>
+    <button onClick={() => { setShowMenu(false); handleLogout(); }}>
+      Uitloggen
+    </button>
+  </div>
+)}
+        
       </header>
 
 <button
