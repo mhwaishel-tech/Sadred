@@ -803,15 +803,8 @@ setNotice("Bericht verzonden.");
   }
 
   try {
-    const permission =
-      await OneSignal.Notifications.requestPermission();
-
-    if (permission || Notification.permission === "granted") {
-      await OneSignal.User.PushSubscription.optIn();
-      setNotice("Meldingen zijn ingeschakeld.");
-    } else {
-      setNotice("Toestemming voor meldingen is niet gegeven.");
-    }
+    await OneSignal.User.PushSubscription.optIn();
+setNotice("Meldingen zijn ingeschakeld.");
   } catch (error: any) {
     setNotice("Fout bij meldingen: " + (error?.message || String(error)));
   }
