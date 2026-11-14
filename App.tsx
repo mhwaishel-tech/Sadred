@@ -791,6 +791,7 @@ setNotice("Bericht verzonden.");
       Instellingen
     </button>
 <button onClick={async () => {
+  setShowMenu(false);
   const OneSignal =
     (window as any).OneSignal ||
     (window as any).__sadRadOneSignal;
@@ -814,7 +815,6 @@ setNotice("Bericht verzonden.");
     setNotice("Fout bij meldingen: " + (error?.message || String(error)));
   }
 
-  setShowMenu(false);
 }}>
   Schakel meldingen in
 </button>
