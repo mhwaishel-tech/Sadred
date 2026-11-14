@@ -792,7 +792,7 @@ setNotice("Bericht verzonden.");
     </button>
     <button onClick={() => {
   setShowMenu(false);
-
+setNotice("Meldingsinstellingen worden geopend...");
   const deferred =
     (window as any).OneSignalDeferred =
     (window as any).OneSignalDeferred || [];
