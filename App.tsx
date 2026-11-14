@@ -792,6 +792,7 @@ setNotice("Bericht verzonden.");
     </button>
 <button onClick={async () => {
   setShowMenu(false);
+  setNotice("Bezig met meldingen...");
   const OneSignal =
     (window as any).OneSignal ||
     (window as any).__sadRadOneSignal;
