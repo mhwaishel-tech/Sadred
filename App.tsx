@@ -1463,7 +1463,9 @@ setNotice("Meldingen zijn ingeschakeld.");
 <label>Telefoonnummer</label>
 <input value={settingsPhone} onChange={(e) => setSettingsPhone(e.target.value)} />
 
-      <button className="primary-btn full-btn" onClick={() => setShowProfile(false)}>
+      <button className="primary-btn full-btn" onClick={saveSettings}>
+  Opslaan
+</button>
         Sluiten
       </button>
     </div>
