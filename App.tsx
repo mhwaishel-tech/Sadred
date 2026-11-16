@@ -229,6 +229,8 @@ if (!client || !user) return;
 
       setProfile(profileData as Profile | null);
       setSettingsStreet(profileData?.street ?? "");
+      street: settingsStreet,
+postcode: settingsPostcode,
 setSettingsPostcode(profileData?.postcode ?? "");
       setSettingsName(profileData?.display_name ?? "");
 setSettingsCity(profileData?.city ?? "");
