@@ -63,7 +63,7 @@ button{cursor:pointer;touch-action:manipulation;pointer-events:auto}
   background-position: center;
   background-size: 100% 100%;
   border-radius: 0;
-  opacity: 0.20;
+  opacity: 0.50;
   pointer-events: none;
   z-index: 0;
 }
