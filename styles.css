@@ -3,7 +3,19 @@ html{scroll-behavior:smooth}
 body{margin:0;font-family:Arial,sans-serif;color:#18352d;background:#fbfcfa}
 button{cursor:pointer;touch-action:manipulation;pointer-events:auto}
 .app{min-height:100vh}
-.header{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 6%;background:white;border-bottom:1px solid #eee}
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:15px 6%;
+  background-image:url("/icons/hero-logo-square.png");
+  background-size:100% 100%;
+  background-position:center;
+  background-repeat:no-repeat;
+  border-bottom:1px solid #eee;
+  position:relative;
+}
 .logo{display:flex;align-items:center;gap:8px;color:#17634d;text-decoration:none;font-size:23px;font-weight:bold}
 .header nav{display:flex;gap:20px}
 .header nav a{color:#587068;text-decoration:none}
