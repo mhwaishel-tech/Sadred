@@ -44,6 +44,8 @@ type Profile = {
   user_id: string;
   display_name: string | null;
   city: string | null;
+    street: string | null;
+  postcode: string | null;
   phone: string | null;
   role: string;
   notifications_enabled: boolean | null;
