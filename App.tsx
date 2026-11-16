@@ -756,14 +756,7 @@ setNotice("Bericht verzonden.");
 }}
   onClick={() => setShowMenu(!showMenu)}
   aria-label="Menu"
-  style={{
-    position: "fixed",
-    top: "0",
-    left: "0",
-    margin: "0",
-    zIndex: 10000,
-    borderRadius: "0 0 12px 0"
-  }}
+  
 >
   <EllipsisVertical size={22} />
 </button>
