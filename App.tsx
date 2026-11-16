@@ -1466,8 +1466,10 @@ setNotice("Meldingen zijn ingeschakeld.");
       <button className="primary-btn full-btn" onClick={saveSettings}>
   Opslaan
 </button>
-        Sluiten
-      </button>
+
+<button className="secondary-btn full-btn" onClick={() => setShowProfile(false)}>
+  Sluiten
+</button>
     </div>
   </div>
 )}
