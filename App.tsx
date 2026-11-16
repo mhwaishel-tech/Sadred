@@ -327,7 +327,7 @@ setNotifications(notificationData ?? []);
 
   const { error } = await supabase
     .from("profiles")
-    .update({
+    .upsert({
       display_name: settingsName,
       city: settingsCity,
       street: settingsStreet,
