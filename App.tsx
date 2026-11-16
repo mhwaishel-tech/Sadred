@@ -712,70 +712,57 @@ setNotice("Bericht verzonden.");
           <a href="#opdrachten">Opdrachten</a>
           <a href="#hoe-werkt-het">Hoe werkt het?</a>
         </nav>
-<button
-  className="secondary-btn"
-  onClick={() => user ? setShowInbox(true) : setShowLogin(true)}
->
-  <span style={{ position: "relative", display: "inline-flex" }}>
-    <MessageCircle size={17} />
-    {user && messages.filter((m) => m.receiver_id === user.id && !m.is_read).length > 0 && (
-      <span style={{
-        position: "absolute",
-        top: "-9px",
-        right: "-10px",
-        background: "red",
-        color: "white",
-        borderRadius: "50%",
-        minWidth: "16px",
-        height: "16px",
-        fontSize: "10px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontWeight: "bold"
-      }}>
-        {messages.filter((m) => m.receiver_id === user.id && !m.is_read).length}
-      </span>
-    )}
-  </span>
-</button>
-        <button
-  className="secondary-btn"
-  onClick={() => user && setShowNotifications(true)}
->
-    <span style={{ position: "relative", display: "inline-flex" }}>
-    <Bell size={17} />
-    {notifications.filter((n) => !n.is_read).length > 0 && (
-      <span style={{
-        position: "absolute",
-        top: "-9px",
-        right: "-10px",
-        background: "red",
-        color: "white",
-        borderRadius: "50%",
-        minWidth: "16px",
-        height: "16px",
-        fontSize: "10px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontWeight: "bold"
-      }}>
-        {notifications.filter((n) => !n.is_read).length}
-      </span>
-    )}
-  </span>
 
-</button>
-        <div className="header-actions">
-        </div>
-          <button
-  className="secondary-btn"
-  onClick={() => setShowMenu(!showMenu)}
-  aria-label="Menu"
->
-  <EllipsisVertical size={22} />
-</button>
+<div style={{ display: "flex", alignItems: "center", gap: "8px", marginLeft: "auto" }}>
+  <button
+    className="secondary-btn"
+    onClick={() => user ? setShowInbox(true) : setShowLogin(true)}
+  >
+    <span style={{ position: "relative", display: "inline-flex" }}>
+      <MessageCircle size={17} />
+      {user && messages.filter((m) => m.receiver_id === user.id && !m.is_read).length > 0 && (
+        <span style={{
+          position: "absolute", top: "-9px", right: "-10px",
+          background: "red", color: "white", borderRadius: "50%",
+          minWidth: "16px", height: "16px", fontSize: "10px",
+          display: "flex", alignItems: "center",
+          justifyContent: "center", fontWeight: "bold"
+        }}>
+          {messages.filter((m) => m.receiver_id === user.id && !m.is_read).length}
+        </span>
+      )}
+    </span>
+  </button>
+
+  <button
+    className="secondary-btn"
+    onClick={() => user && setShowNotifications(true)}
+  >
+    <span style={{ position: "relative", display: "inline-flex" }}>
+      <Bell size={17} />
+      {notifications.filter((n) => !n.is_read).length > 0 && (
+        <span style={{
+          position: "absolute", top: "-9px", right: "-10px",
+          background: "red", color: "white", borderRadius: "50%",
+          minWidth: "16px", height: "16px", fontSize: "10px",
+          display: "flex", alignItems: "center",
+          justifyContent: "center", fontWeight: "bold"
+        }}>
+          {notifications.filter((n) => !n.is_read).length}
+        </span>
+      )}
+    </span>
+  </button>
+
+  <button
+    className="secondary-btn"
+    onClick={() => setShowMenu(!showMenu)}
+    aria-label="Menu"
+  >
+    <EllipsisVertical size={22} />
+  </button>
+</div>
+        
         {showMenu && (
   <div className="menu-dropdown">
     <button onClick={() => { setShowMenu(false); setShowProfile(true); }}>
