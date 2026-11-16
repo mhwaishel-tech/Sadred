@@ -703,13 +703,7 @@ setNotice("Bericht verzonden.");
     return (
     <main className="app">
       <header className="header">
-    <a href="#" className="logo">
-  <img
-    src="/icons/hero-logo-square.png"
-    alt="Sad Rad"
-    style={{ width: "55px", height: "55px", objectFit: "contain" }}
-  />
-</a>    
+    
         
         <nav>
           <a href="#opdrachten">Opdrachten</a>
