@@ -88,6 +88,8 @@ const [showSettings, setShowSettings] = useState(false);
   const [settingsName, setSettingsName] = useState("");
 const [settingsCity, setSettingsCity] = useState("");
 const [settingsPhone, setSettingsPhone] = useState("");
+  const [settingsStreet, setSettingsStreet] = useState("");
+const [settingsPostcode, setSettingsPostcode] = useState("");
 const [newPassword, setNewPassword] = useState("");
 const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -226,6 +228,8 @@ if (!client || !user) return;
         .maybeSingle();
 
       setProfile(profileData as Profile | null);
+      setSettingsStreet(profileData?.street ?? "");
+setSettingsPostcode(profileData?.postcode ?? "");
       setSettingsName(profileData?.display_name ?? "");
 setSettingsCity(profileData?.city ?? "");
 setSettingsPhone(profileData?.phone ?? "");
