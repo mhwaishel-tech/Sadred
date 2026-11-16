@@ -743,7 +743,17 @@ setNotice("Bericht verzonden.");
 </div>
 
 <button
-  className="secondary-btn"
+  style={{
+  position: "fixed",
+  top: "0",
+  left: "0",
+  margin: "0",
+  padding: "8px",
+  background: "transparent",
+  border: "none",
+  boxShadow: "none",
+  zIndex: 10000
+}}
   onClick={() => setShowMenu(!showMenu)}
   aria-label="Menu"
   style={{
