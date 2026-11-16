@@ -328,6 +328,7 @@ setNotifications(notificationData ?? []);
   const { error } = await supabase
     .from("profiles")
     .upsert({
+      user_id: user.id,
       display_name: settingsName,
       city: settingsCity,
       street: settingsStreet,
@@ -335,7 +336,7 @@ postcode: settingsPostcode,
       phone: settingsPhone,
       notifications_enabled: notificationsEnabled,
     })
-    .eq("user_id", user.id);
+    
 
   if (error) {
     setNotice(error.message);
