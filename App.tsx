@@ -715,7 +715,7 @@ setNotice("Bericht verzonden.");
   right: "18px",
   bottom: "20px",
   display: "flex",
-  flexDirection: "column",
+  flexDirection: "row",
   gap: "12px",
   zIndex: 9999
 }}>
