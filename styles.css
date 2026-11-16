@@ -46,6 +46,29 @@ button{cursor:pointer;touch-action:manipulation;pointer-events:auto}
 .hero{padding:65px 8%;display:flex;align-items:center;justify-content:space-between;background:#f1f7f1}
 .hero-content{max-width:650px}
 .hero h1{font-size:48px;color:#183b30}
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/icons/icon-512.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0.10;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
+}
 .hero p{line-height:1.8;color:#65776f}
 .hero-icon{color:#287257}
 .eyebrow{color:#d16b4d;font-size:12px;font-weight:bold;letter-spacing:2px}
