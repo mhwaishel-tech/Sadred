@@ -1442,8 +1442,10 @@ setNotice("Meldingen zijn ingeschakeld.");
       <h2>Mijn profiel</h2>
 
       <p><strong>Naam:</strong> {profile?.display_name || "Niet ingevuld"}</p>
-      <p><strong>Stad:</strong> {profile?.city || "Niet ingevuld"}</p>
-      <p><strong>Account:</strong> {user?.email}</p>
+      <p><strong>Straatnaam:</strong> {profile?.street || "Niet ingevuld"}</p>
+<p><strong>Postcode:</strong> {profile?.postcode || "Niet ingevuld"}</p>
+<p><strong>Stad:</strong> {profile?.city || "Niet ingevuld"}</p>
+<p><strong>Telefoonnummer:</strong> {profile?.phone || "Niet ingevuld"}</p>
 
       <button className="primary-btn full-btn" onClick={() => setShowProfile(false)}>
         Sluiten
