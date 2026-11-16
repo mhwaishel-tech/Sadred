@@ -710,55 +710,45 @@ setNotice("Bericht verzonden.");
           <a href="#hoe-werkt-het">Hoe werkt het?</a>
         </nav>
 
-<div style={{ display: "flex", alignItems: "center", gap: "8px", marginLeft: "auto" }}>
+<div style={{
+  position: "fixed",
+  right: "18px",
+  bottom: "20px",
+  display: "flex",
+  flexDirection: "column",
+  gap: "12px",
+  zIndex: 9999
+}}>
   <button
     className="secondary-btn"
     onClick={() => user ? setShowInbox(true) : setShowLogin(true)}
+    style={{ width: "52px", height: "52px", borderRadius: "50%" }}
   >
-    <span style={{ position: "relative", display: "inline-flex" }}>
-      <MessageCircle size={17} />
-      {user && messages.filter((m) => m.receiver_id === user.id && !m.is_read).length > 0 && (
-        <span style={{
-          position: "absolute", top: "-9px", right: "-10px",
-          background: "red", color: "white", borderRadius: "50%",
-          minWidth: "16px", height: "16px", fontSize: "10px",
-          display: "flex", alignItems: "center",
-          justifyContent: "center", fontWeight: "bold"
-        }}>
-          {messages.filter((m) => m.receiver_id === user.id && !m.is_read).length}
-        </span>
-      )}
-    </span>
+    <MessageCircle size={22} />
+    {user && messages.filter((m) => m.receiver_id === user.id && !m.is_read).length > 0 && (
+      <span>{messages.filter((m) => m.receiver_id === user.id && !m.is_read).length}</span>
+    )}
   </button>
 
   <button
     className="secondary-btn"
     onClick={() => user && setShowNotifications(true)}
+    style={{ width: "52px", height: "52px", borderRadius: "50%" }}
   >
-    <span style={{ position: "relative", display: "inline-flex" }}>
-      <Bell size={17} />
-      {notifications.filter((n) => !n.is_read).length > 0 && (
-        <span style={{
-          position: "absolute", top: "-9px", right: "-10px",
-          background: "red", color: "white", borderRadius: "50%",
-          minWidth: "16px", height: "16px", fontSize: "10px",
-          display: "flex", alignItems: "center",
-          justifyContent: "center", fontWeight: "bold"
-        }}>
-          {notifications.filter((n) => !n.is_read).length}
-        </span>
-      )}
-    </span>
-  </button>
-
-  <button
-    className="secondary-btn"
-    onClick={() => setShowMenu(!showMenu)}
-    aria-label="Menu"
-  >
-    <EllipsisVertical size={22} />
+    <Bell size={22} />
+    {notifications.filter((n) => !n.is_read).length > 0 && (
+      <span>{notifications.filter((n) => !n.is_read).length}</span>
+    )}
   </button>
 </div>
+
+<button
+  className="secondary-btn"
+  onClick={() => setShowMenu(!showMenu)}
+  aria-label="Menu"
+>
+  <EllipsisVertical size={22} />
+</button>
         
         {showMenu && (
   <div className="menu-dropdown">
