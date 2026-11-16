@@ -229,8 +229,7 @@ if (!client || !user) return;
 
       setProfile(profileData as Profile | null);
       setSettingsStreet(profileData?.street ?? "");
-      street: settingsStreet,
-postcode: settingsPostcode,
+      
 setSettingsPostcode(profileData?.postcode ?? "");
       setSettingsName(profileData?.display_name ?? "");
 setSettingsCity(profileData?.city ?? "");
@@ -331,6 +330,8 @@ setNotifications(notificationData ?? []);
     .update({
       display_name: settingsName,
       city: settingsCity,
+      street: settingsStreet,
+postcode: settingsPostcode,
       phone: settingsPhone,
       notifications_enabled: notificationsEnabled,
     })
