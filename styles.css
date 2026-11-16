@@ -59,7 +59,8 @@ button{cursor:pointer;touch-action:manipulation;pointer-events:auto}
   background-image: url("/icons/icon-512.png");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: contain;
+  background-size: 100% 100%;
+background-position: center;
   opacity: 0.50;
   pointer-events: none;
   z-index: 0;
