@@ -703,10 +703,7 @@ setNotice("Bericht verzonden.");
     return (
     <main className="app">
       <header className="header">
-        <a href="#" className="logo">
-          <Recycle size={28} />
-          <span>Sad Rad</span>
-          </a>
+        
         
         <nav>
           <a href="#opdrachten">Opdrachten</a>
