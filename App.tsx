@@ -732,12 +732,27 @@ setNotice("Bericht verzonden.");
   <button
     className="secondary-btn"
     onClick={() => user ? setShowInbox(true) : setShowLogin(true)}
-    style={{ width: "52px", height: "52px", borderRadius: "50%" }}
-  >
+    style={{ width: "52px", height: "52px", borderRadius: "50%", position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
     <MessageCircle size={22} />
     {user && messages.filter((m) => m.receiver_id === user.id && !m.is_read).length > 0 && (
-      <span>{messages.filter((m) => m.receiver_id === user.id && !m.is_read).length}</span>
-    )}
+      <span style={{
+  position: "absolute",
+  top: "-7px",
+  right: "-7px",
+  background: "red",
+  color: "white",
+  borderRadius: "50%",
+  minWidth: "20px",
+  height: "20px",
+  padding: "0 5px",
+  fontSize: "12px",
+  fontWeight: "bold",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center"
+}}>
+  {messages.filter((m) => m.receiver_id === user.id && !m.is_read).length}
+</span>
   </button>
 
   <button
