@@ -753,6 +753,7 @@ setNotice("Bericht verzonden.");
 }}>
   {messages.filter((m) => m.receiver_id === user.id && !m.is_read).length}
 </span>
+      )}
   </button>
 
   <button
