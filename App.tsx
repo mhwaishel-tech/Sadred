@@ -743,12 +743,27 @@ setNotice("Bericht verzonden.");
   <button
     className="secondary-btn"
     onClick={() => user && setShowNotifications(true)}
-    style={{ width: "52px", height: "52px", borderRadius: "50%" }}
-  >
+style={{ width: "52px", height: "52px", borderRadius: "50%", position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
     <Bell size={22} />
     {notifications.filter((n) => !n.is_read).length > 0 && (
-      <span>{notifications.filter((n) => !n.is_read).length}</span>
-    )}
+      <span style={{
+  position: "absolute",
+  top: "-7px",
+  right: "-7px",
+  background: "red",
+  color: "white",
+  borderRadius: "50%",
+  minWidth: "20px",
+  height: "20px",
+  padding: "0 5px",
+  fontSize: "12px",
+  fontWeight: "bold",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center"
+}}>
+  {notifications.filter((n) => !n.is_read).length}
+</span>
   </button>
 </div>
 
