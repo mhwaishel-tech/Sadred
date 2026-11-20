@@ -662,19 +662,6 @@ if (notificationError) {
     setNotice("Bericht verzenden mislukt.");
     return;
   }
-const { error: notificationError } = await supabase
-  .from("notifications")
-  .insert({
-    user_id: receiverId,
-    title: "Nieuw bericht",
-    listing_id: selectedListing.id,
-    type: "message",
-    message: "Je hebt een nieuw bericht ontvangen.",
-  });
-
-if (notificationError) {
-  setNotice("Bericht verzonden, maar melding mislukt: " + notificationError.message);
-}
 
 setChatText("");
 await loadData();
