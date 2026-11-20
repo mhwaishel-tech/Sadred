@@ -744,7 +744,7 @@ setNotice("Bericht verzonden.");
     className="secondary-btn"
     onClick={() => user && setShowNotifications(true)}
 style={{ width: "52px", height: "52px", borderRadius: "50%", position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-    <Bell size={22} />p
+    <Bell size={22} />
     {notifications.filter((n) => !n.is_read).length > 0 && (
       <span style={{
   position: "absolute",
