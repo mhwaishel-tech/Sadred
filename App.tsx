@@ -1550,9 +1550,7 @@ setNotice("Meldingen zijn ingeschakeld.");
             <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="naam@email.com" />
             <label>Wachtwoord</label>
             <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Wachtwoord" />
-            <button className="primary-btn full-btn" onClick={handleAuth}>
-              {isSignup ? "Registreren" : "Inloggen"}
-            </button>
+            
             <button
   className="primary-btn full-btn"
   onClick={handleAuth}
