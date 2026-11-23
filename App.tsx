@@ -1553,9 +1553,17 @@ setNotice("Meldingen zijn ingeschakeld.");
             <button className="primary-btn full-btn" onClick={handleAuth}>
               {isSignup ? "Registreren" : "Inloggen"}
             </button>
-            <button className="text-btn" onClick={() => setIsSignup(!isSignup)}>
-              {isSignup ? "Ik heb al een account" : "Nog geen account? Registreren"}
-            </button>
+            <button
+  className="primary-btn full-btn"
+  onClick={handleAuth}
+  disabled={authLoading}
+>
+  {authLoading
+    ? "Even geduld..."
+    : isSignup
+      ? "Registreren"
+      : "Inloggen"}
+</button>
           </div>
         </div>
       )}
