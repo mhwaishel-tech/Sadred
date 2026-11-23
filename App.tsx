@@ -117,6 +117,7 @@ const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [selectedChatUserId, setSelectedChatUserId] = useState<string | null>(null);
   const [chatSearch, setChatSearch] = useState("");
   const [email, setEmail] = useState("");
+  const [authLoading, setAuthLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isSignup, setIsSignup] = useState(false);
@@ -277,11 +278,24 @@ setNotifications(notificationData ?? []);
     setLoading(false);
   }
     async function handleAuth() {
-    if (!supabase) return;
+  if (authLoading) return;
 
+  if (!supabase) {
+    setNotice("Serververbinding ontbreekt. Controleer de Supabase-instellingen.");
+    return;
+  }
+
+  if (!email.trim() || !password) {
+    setNotice("Vul je e-mailadres en wachtwoord in.");
+    return;
+  }
+
+  setAuthLoading(true);
+
+  try {
     if (isSignup) {
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: email.trim(),
         password,
       });
 
@@ -291,17 +305,24 @@ setNotifications(notificationData ?? []);
       }
 
       if (data.user) {
-        await supabase.from("profiles").upsert({
-          user_id: data.user.id,
-          display_name: name,
-          role: "both",
-        });
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .upsert({
+            user_id: data.user.id,
+            display_name: name,
+            role: "both",
+          });
+
+        if (profileError) {
+          setNotice(profileError.message);
+          return;
+        }
       }
 
       setNotice("Account aangemaakt. Controleer je e-mail indien nodig.");
     } else {
       const { error } = await supabase.auth.signInWithPassword({
-        email,
+        email: email.trim(),
         password,
       });
 
@@ -315,10 +336,15 @@ setNotifications(notificationData ?? []);
     setEmail("");
     setPassword("");
     setName("");
+  } catch (error) {
+    setNotice(
+      error instanceof Error
+        ? error.message
+        : "Er is een onverwachte fout opgetreden."
+    );
+  } finally {
+    setAuthLoading(false);
   }
-
-  async function handleLogout() {
-    if (!supabase) return;
 
     await supabase.auth.signOut();
     setNotice("Je bent uitgelogd.");
