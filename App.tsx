@@ -115,6 +115,7 @@ const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [showInbox, setShowInbox] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [selectedChatUserId, setSelectedChatUserId] = useState<string | null>(null);
+  const [chatSearch, setChatSearch] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -1123,25 +1124,7 @@ setNotice("Meldingen zijn ingeschakeld.");
   </div>
 )}
       {showInbox && user && (
-  <div className="modal-backdrop" onClick={() => setShowInbox(false)}>
-    <div className="modal" onClick={(event) => event.stopPropagation()}>
-      <button className="close-btn" onClick={() => setShowInbox(false)}>
-        <X />
-      </button>
-
-      <h2><MessageCircle /> Berichten</h2>
-
-   {Array.from(
-  new Set(
-    messages
-      .filter((message) =>
-        message.sender_id === user.id || message.receiver_id === user.id
-      )
-      .map((message) => {
-  const otherId =
-    message.sender_id === user.id
-      ? message.receiver_id
-      : message.sender_id;
+  
 
   return `${otherId}|||${message.listing_id}`;
 })
