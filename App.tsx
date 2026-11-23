@@ -342,13 +342,17 @@ setNotifications(notificationData ?? []);
         ? error.message
         : "Er is een onverwachte fout opgetreden."
     );
-  } finally {
+    } finally {
     setAuthLoading(false);
   }
+}
 
-    await supabase.auth.signOut();
-    setNotice("Je bent uitgelogd.");
-  }
+async function handleLogout() {
+  if (!supabase) return;
+
+  await supabase.auth.signOut();
+  setNotice("Je bent uitgelogd.");
+}
   async function saveSettings() {
   if (!supabase || !user) return;
 
