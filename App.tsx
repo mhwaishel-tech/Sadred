@@ -1123,8 +1123,6 @@ setNotice("Meldingen zijn ingeschakeld.");
     </div>
   </div>
 )}
-      {
-
       {showInbox && user && (
         <div className="modal-backdrop" onClick={() => setShowInbox(false)}>
           <div
