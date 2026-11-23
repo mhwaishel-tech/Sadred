@@ -1479,7 +1479,7 @@ setNotice("Meldingen zijn ingeschakeld.");
                           "nl-BE",
                           { hour: "2-digit", minute: "2-digit" }
                         )}
-                        {message.sender_id === user.id && " ✓✓"}
+                        {message.sender_id === user.id && (message.is_read ? " ✓✓" : " ✓")}
                       </div>
                     </div>
                   </div>
