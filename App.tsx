@@ -1244,61 +1244,388 @@ setNotice("Meldingen zijn ingeschakeld.");
         <X />
       </button>
 
-      <h2>
-        {allProfiles.find(
-          (item) => item.user_id === selectedChatUserId
-        )?.display_name || "Gebruiker"}
-      </h2>
+      {showInbox && user && (
+        <div className="modal-backdrop" onClick={() => setShowInbox(false)}>
+          <div
+            className="modal"
+            onClick={(event) => event.stopPropagation()}
+            style={{ maxWidth: "520px", width: "95%" }}
+          >
+            <button className="close-btn" onClick={() => setShowInbox(false)}>
+              <X />
+            </button>
 
-      <div style={{ maxHeight: "400px", overflowY: "auto" }}>
-        {messages
-          .filter(
-            (message) =>
-              message.listing_id === selectedListing?.id &&
-              (message.sender_id === user.id &&
-                message.receiver_id === selectedChatUserId) ||
-              (message.sender_id === selectedChatUserId &&
-                message.receiver_id === user.id)
-          )
-          .map((message) => (
-            <div
-              key={message.id}
+            <h2><MessageCircle /> Berichten</h2>
+
+            <input
+              type="text"
+              value={chatSearch}
+              onChange={(event) => setChatSearch(event.target.value)}
+              placeholder="Zoek gesprekken..."
               style={{
-                textAlign: message.sender_id === user.id ? "right" : "left",
-                margin: "10px 0",
+                width: "100%",
+                padding: "12px",
+                borderRadius: "12px",
+                marginBottom: "16px",
+                boxSizing: "border-box"
+              }}
+            />
+
+            {Array.from(
+              new Set(
+                messages
+                  .filter((message) =>
+                    message.sender_id === user.id ||
+                    message.receiver_id === user.id
+                  )
+                  .map((message) => {
+                    const otherId =
+                      message.sender_id === user.id
+                        ? message.receiver_id
+                        : message.sender_id;
+                    return `${otherId}|||${message.listing_id}`;
+                  })
+              )
+            )
+              .map((chatKey) => {
+                const [otherId, listingId] = chatKey.split("|||");
+
+                const conversation = messages
+                  .filter(
+                    (message) =>
+                      message.listing_id === listingId &&
+                      (
+                        (message.sender_id === user.id &&
+                          message.receiver_id === otherId) ||
+                        (message.sender_id === otherId &&
+                          message.receiver_id === user.id)
+                      )
+                  )
+                  .sort(
+                    (a, b) =>
+                      new Date(a.created_at).getTime() -
+                      new Date(b.created_at).getTime()
+                  );
+
+                const lastMessage = conversation[conversation.length - 1];
+                const otherProfile = allProfiles.find(
+                  (item) => item.user_id === otherId
+                );
+                const listing = listings.find(
+                  (item) => item.id === listingId
+                );
+                const unreadCount = conversation.filter(
+                  (message) =>
+                    message.sender_id === otherId &&
+                    message.receiver_id === user.id &&
+                    !message.is_read
+                ).length;
+
+                return {
+                  chatKey,
+                  otherId,
+                  listing,
+                  otherProfile,
+                  lastMessage,
+                  unreadCount
+                };
+              })
+              .filter((chat) => {
+                const searchText = chatSearch.trim().toLowerCase();
+                return (
+                  !searchText ||
+                  (chat.otherProfile?.display_name || "Gebruiker")
+                    .toLowerCase().includes(searchText) ||
+                  (chat.listing?.title || "").toLowerCase().includes(searchText) ||
+                  (chat.lastMessage?.body || "").toLowerCase().includes(searchText)
+                );
+              })
+              .sort(
+                (a, b) =>
+                  new Date(b.lastMessage?.created_at || 0).getTime() -
+                  new Date(a.lastMessage?.created_at || 0).getTime()
+              )
+              .map((chat) => (
+                <div
+                  key={chat.chatKey}
+                  onClick={async () => {
+                    setSelectedChatUserId(chat.otherId);
+                    setSelectedListing(chat.listing || null);
+                    setShowInbox(false);
+                    setShowChat(true);
+
+                    if (chat.listing) {
+                      await supabase
+                        ?.from("messages")
+                        .update({ is_read: true })
+                        .eq("listing_id", chat.listing.id)
+                        .eq("sender_id", chat.otherId)
+                        .eq("receiver_id", user.id);
+
+                      setMessages((previous) =>
+                        previous.map((message) =>
+                          message.listing_id === chat.listing?.id &&
+                          message.sender_id === chat.otherId &&
+                          message.receiver_id === user.id
+                            ? { ...message, is_read: true }
+                            : message
+                        )
+                      );
+                    }
+                  }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    padding: "13px 8px",
+                    borderBottom: "1px solid #e5e7eb",
+                    cursor: "pointer"
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "48px",
+                      height: "48px",
+                      minWidth: "48px",
+                      borderRadius: "50%",
+                      background: "#e0f2e5",
+                      color: "#247a42",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "19px",
+                      fontWeight: "bold"
+                    }}
+                  >
+                    {(chat.otherProfile?.display_name || "G")
+                      .trim()
+                      .charAt(0)
+                      .toUpperCase()}
+                  </div>
+
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <strong>
+                      {chat.otherProfile?.display_name || "Gebruiker"}
+                    </strong>
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        color: "#247a42",
+                        marginTop: "3px"
+                      }}
+                    >
+                      {chat.listing?.title || "Advertentie"}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "13px",
+                        color: "#777",
+                        marginTop: "4px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap"
+                      }}
+                    >
+                      {chat.lastMessage?.sender_id === user.id ? "Jij: " : ""}
+                      {chat.lastMessage?.body || "Geen berichten"}
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-end",
+                      gap: "7px"
+                    }}
+                  >
+                    <small style={{ color: "#888", whiteSpace: "nowrap" }}>
+                      {chat.lastMessage
+                        ? new Date(chat.lastMessage.created_at).toLocaleTimeString(
+                            "nl-BE",
+                            { hour: "2-digit", minute: "2-digit" }
+                          )
+                        : ""}
+                    </small>
+                    {chat.unreadCount > 0 && (
+                      <span
+                        style={{
+                          background: "#e53935",
+                          color: "white",
+                          borderRadius: "50%",
+                          minWidth: "21px",
+                          height: "21px",
+                          padding: "0 5px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "12px",
+                          fontWeight: "bold"
+                        }}
+                      >
+                        {chat.unreadCount}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+            {messages.filter(
+              (message) =>
+                message.sender_id === user.id ||
+                message.receiver_id === user.id
+            ).length === 0 && <p>Je hebt nog geen berichten.</p>}
+          </div>
+        </div>
+      )}
+
+      {showChat && user && selectedChatUserId && (
+        <div className="modal-backdrop" onClick={() => setShowChat(false)}>
+          <div
+            className="modal"
+            onClick={(event) => event.stopPropagation()}
+            style={{ maxWidth: "520px", width: "95%" }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                borderBottom: "1px solid #e5e7eb",
+                paddingBottom: "12px",
+                marginBottom: "15px"
               }}
             >
+              <button
+                className="close-btn"
+                onClick={() => setShowChat(false)}
+              >
+                <X />
+              </button>
+
               <div
                 style={{
-                  display: "inline-block",
-                  padding: "10px",
-                  borderRadius: "12px",
-                  background:
-                    message.sender_id === user.id ? "#d9fdd3" : "#eeeeee",
-                  maxWidth: "80%",
+                  width: "42px",
+                  height: "42px",
+                  borderRadius: "50%",
+                  background: "#e0f2e5",
+                  color: "#247a42",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: "bold"
                 }}
               >
-                <p>{message.body}</p>
-                <small>
-                  {new Date(message.created_at).toLocaleString("nl-BE")}
-                </small>
+                {(allProfiles.find(
+                  (item) => item.user_id === selectedChatUserId
+                )?.display_name || "G")
+                  .trim()
+                  .charAt(0)
+                  .toUpperCase()}
+              </div>
+
+              <div style={{ flex: 1 }}>
+                <strong>
+                  {allProfiles.find(
+                    (item) => item.user_id === selectedChatUserId
+                  )?.display_name || "Gebruiker"}
+                </strong>
+                <div style={{ fontSize: "12px", color: "#777" }}>
+                  {selectedListing?.title || "Advertentie"}
+                </div>
               </div>
             </div>
-          ))}
-      </div>
 
-      <textarea
-        value={chatText}
-        onChange={(event) => setChatText(event.target.value)}
-        placeholder="Schrijf een bericht..."
-      />
+            <div
+              style={{
+                maxHeight: "400px",
+                minHeight: "220px",
+                overflowY: "auto",
+                padding: "10px",
+                background: "#f7f8f7",
+                borderRadius: "12px"
+              }}
+            >
+              {messages
+                .filter(
+                  (message) =>
+                    message.listing_id === selectedListing?.id &&
+                    (
+                      (message.sender_id === user.id &&
+                        message.receiver_id === selectedChatUserId) ||
+                      (message.sender_id === selectedChatUserId &&
+                        message.receiver_id === user.id)
+                    )
+                )
+                .sort(
+                  (a, b) =>
+                    new Date(a.created_at).getTime() -
+                    new Date(b.created_at).getTime()
+                )
+                .map((message) => (
+                  <div
+                    key={message.id}
+                    style={{
+                      display: "flex",
+                      justifyContent:
+                        message.sender_id === user.id
+                          ? "flex-end"
+                          : "flex-start",
+                      margin: "9px 0"
+                    }}
+                  >
+                    <div
+                      style={{
+                        padding: "10px 13px",
+                        borderRadius: "14px",
+                        background:
+                          message.sender_id === user.id
+                            ? "#d9fdd3"
+                            : "#ffffff",
+                        maxWidth: "82%",
+                        boxShadow: "0 1px 2px rgba(0,0,0,0.08)"
+                      }}
+                    >
+                      <p style={{ margin: "0 0 5px", overflowWrap: "anywhere" }}>
+                        {message.body}
+                      </p>
+                      <div
+                        style={{
+                          fontSize: "10px",
+                          color: "#777",
+                          textAlign: "right"
+                        }}
+                      >
+                        {new Date(message.created_at).toLocaleTimeString(
+                          "nl-BE",
+                          { hour: "2-digit", minute: "2-digit" }
+                        )}
+                        {message.sender_id === user.id && " ✓✓"}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
 
-      <button className="primary-btn full-btn" onClick={sendMessage}>
-        <Send size={16} /> Verstuur
-      </button>
-    </div>
-  </div>
-)}
+            <textarea
+              value={chatText}
+              onChange={(event) => setChatText(event.target.value)}
+              placeholder="Schrijf een bericht..."
+              style={{
+                width: "100%",
+                marginTop: "12px",
+                boxSizing: "border-box",
+                borderRadius: "12px"
+              }}
+            />
+
+            <button className="primary-btn full-btn" onClick={sendMessage}>
+              <Send size={16} /> Verstuur
+            </button>
+          </div>
+        </div>
+      )}
+      
       {showLogin && (
         <div className="modal-backdrop" onClick={() => setShowLogin(false)}>
           <div className="modal" onClick={(event) => event.stopPropagation()}>
