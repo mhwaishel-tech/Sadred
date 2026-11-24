@@ -85,6 +85,7 @@ export default function App() {
 const [showMyListings, setShowMyListings] = useState(false);
 const [showMyReviews, setShowMyReviews] = useState(false);
 const [showSettings, setShowSettings] = useState(false);
+const [settingsSection, setSettingsSection] = useState<"profile" | "notifications" | "password" | null>(null);
   const [settingsName, setSettingsName] = useState("");
 const [settingsCity, setSettingsCity] = useState("");
 const [settingsPhone, setSettingsPhone] = useState("");
@@ -1788,83 +1789,79 @@ setNotice("Meldingen zijn ingeschakeld.");
 
       <h2>Instellingen</h2>
 
-      <h3>Mijn profiel</h3>
-
-      <label>Naam</label>
-      <input
-        value={settingsName}
-        onChange={(event) => setSettingsName(event.target.value)}
-        placeholder="Naam"
-      />
-
-      <label>Straat</label>
-      <input
-        value={settingsStreet}
-        onChange={(event) => setSettingsStreet(event.target.value)}
-        placeholder="Straat"
-      />
-
-      <label>Postcode</label>
-      <input
-        value={settingsPostcode}
-        onChange={(event) => setSettingsPostcode(event.target.value)}
-        placeholder="Postcode"
-      />
-
-      <label>Stad</label>
-      <input
-        value={settingsCity}
-        onChange={(event) => setSettingsCity(event.target.value)}
-        placeholder="Stad"
-      />
-
-      <label>Telefoonnummer</label>
-      <input
-        type="tel"
-        value={settingsPhone}
-        onChange={(event) => setSettingsPhone(event.target.value)}
-        placeholder="Telefoonnummer"
-      />
-
-      <hr />
-
-      <h3>Meldingen</h3>
-      <label>
-        <input
-          type="checkbox"
-          checked={notificationsEnabled}
-          onChange={(event) => setNotificationsEnabled(event.target.checked)}
-        />
-        Meldingen inschakelen
-      </label>
-
-      <button className="primary-btn full-btn" onClick={saveSettings}>
-        Instellingen opslaan
+      <button
+        type="button"
+        className="primary-btn full-btn"
+        onClick={() => setSettingsSection(settingsSection === "profile" ? null : "profile")}
+      >
+        Mijn profiel
       </button>
+      {settingsSection === "profile" && (
+        <>
+          <label>Naam</label>
+          <input value={settingsName} onChange={(event) => setSettingsName(event.target.value)} placeholder="Naam" />
 
-      <hr />
+          <label>Straat</label>
+          <input value={settingsStreet} onChange={(event) => setSettingsStreet(event.target.value)} placeholder="Straat" />
 
-      <h3>Wachtwoord opnieuw instellen</h3>
+          <label>Postcode</label>
+          <input value={settingsPostcode} onChange={(event) => setSettingsPostcode(event.target.value)} placeholder="Postcode" />
 
-      <label>Oud wachtwoord</label>
-      <input
-        type="password"
-        value={currentPassword}
-        onChange={(event) => setCurrentPassword(event.target.value)}
-        placeholder="Oud wachtwoord"
-      />
+          <label>Stad</label>
+          <input value={settingsCity} onChange={(event) => setSettingsCity(event.target.value)} placeholder="Stad" />
 
-      <label>Nieuw wachtwoord</label>
-      <input
-        type="password"
-        value={newPassword}
-        onChange={(event) => setNewPassword(event.target.value)}
-        placeholder="Nieuw wachtwoord"
-      />
+          <label>Telefoonnummer</label>
+          <input type="tel" value={settingsPhone} onChange={(event) => setSettingsPhone(event.target.value)} placeholder="Telefoonnummer" />
 
-      <button className="primary-btn full-btn" onClick={changePassword}>
+          <button className="primary-btn full-btn" onClick={saveSettings}>
+            Instellingen opslaan
+          </button>
+        </>
+      )}
+
+      <button
+        type="button"
+        className="primary-btn full-btn"
+        onClick={() => setSettingsSection(settingsSection === "notifications" ? null : "notifications")}
+      >
+        Meldingen
+      </button>
+      {settingsSection === "notifications" && (
+        <>
+          <label>
+            <input
+              type="checkbox"
+              checked={notificationsEnabled}
+              onChange={(event) => setNotificationsEnabled(event.target.checked)}
+            />
+            Meldingen inschakelen
+          </label>
+          <button className="primary-btn full-btn" onClick={saveSettings}>
+            Instellingen opslaan
+          </button>
+        </>
+      )}
+
+      <button
+        type="button"
+        className="primary-btn full-btn"
+        onClick={() => setSettingsSection(settingsSection === "password" ? null : "password")}
+      >
         Wachtwoord wijzigen
       </button>
+      {settingsSection === "password" && (
+        <>
+          <label>Oud wachtwoord</label>
+          <input type="password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} placeholder="Oud wachtwoord" />
+
+          <label>Nieuw wachtwoord</label>
+          <input type="password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} placeholder="Nieuw wachtwoord" />
+
+          <button className="primary-btn full-btn" onClick={changePassword}>
+            Wachtwoord wijzigen
+          </button>
+        </>
+      )}
     </div>
   </div>
 )}
