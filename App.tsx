@@ -455,6 +455,31 @@ async function changePassword() {
     if (!supabase || !user || !selectedListing) return;
 
     if (selectedListing.user_id !== user.id) {
+      
+async function saveSettings() {
+  if (!supabase || !user) return;
+
+  const { error } = await supabase
+    .from("profiles")
+    .upsert({
+      user_id: user.id,
+      display_name: settingsName,
+      city: settingsCity,
+      street: settingsStreet,
+      postcode: settingsPostcode,
+      phone: settingsPhone,
+      notifications_enabled: notificationsEnabled,
+    });
+
+  if (error) {
+    setNotice(error.message);
+    return;
+  }
+
+  setNotice("Instellingen opgeslagen.");
+  await loadData();
+}
+      
       setNotice("Je mag deze opdracht niet bewerken.");
       return;
     }
