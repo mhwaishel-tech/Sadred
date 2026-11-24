@@ -451,12 +451,7 @@ async function changePassword() {
     setNotice("Je opdracht is geplaatst.");
     await loadData();
   }
-    async function updateListing() {
-    if (!supabase || !user || !selectedListing) return;
-
-    if (selectedListing.user_id !== user.id) {
-      
-async function saveSettings() {
+  async function saveSettings() {
   if (!supabase || !user) return;
 
   const { error } = await supabase
@@ -479,6 +474,12 @@ async function saveSettings() {
   setNotice("Instellingen opgeslagen.");
   await loadData();
 }
+    async function updateListing() {
+    if (!supabase || !user || !selectedListing) return;
+
+    if (selectedListing.user_id !== user.id) {
+      
+
       
       setNotice("Je mag deze opdracht niet bewerken.");
       return;
