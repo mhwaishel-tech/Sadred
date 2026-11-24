@@ -851,9 +851,7 @@ style={{ width: "52px", height: "52px", borderRadius: "50%", position: "relative
         
         {showMenu && (
   <div className="menu-dropdown">
-    <button onClick={() => { setShowMenu(false); setShowProfile(true); }}>
-      Mijn profiel
-    </button>
+    
     <button onClick={() => { setShowMenu(false); setShowMyListings(true); }}>
       Mijn opdrachten
     </button>
@@ -1729,40 +1727,7 @@ setNotice("Meldingen zijn ingeschakeld.");
           </div>
         </div>
       )}
-      {showProfile && (
-  <div className="modal-backdrop" onClick={() => setShowProfile(false)}>
-    <div className="modal" onClick={(event) => event.stopPropagation()}>
-      <button className="close-btn" onClick={() => setShowProfile(false)}>
-        <X />
-      </button>
-
-      <h2>Mijn profiel</h2>
-
-      <label>Naam</label>
-<input value={settingsName} onChange={(e) => setSettingsName(e.target.value)} />
-
-<label>Straatnaam</label>
-<input value={settingsStreet} onChange={(e) => setSettingsStreet(e.target.value)} />
-
-<label>Postcode</label>
-<input value={settingsPostcode} onChange={(e) => setSettingsPostcode(e.target.value)} />
-
-<label>Stad</label>
-<input value={settingsCity} onChange={(e) => setSettingsCity(e.target.value)} />
-
-<label>Telefoonnummer</label>
-<input value={settingsPhone} onChange={(e) => setSettingsPhone(e.target.value)} />
-
-      <button className="primary-btn full-btn" onClick={saveSettings}>
-  Opslaan
-</button>
-
-<button className="secondary-btn full-btn" onClick={() => setShowProfile(false)}>
-  Sluiten
-</button>
-    </div>
-  </div>
-)}
+  
       {showMyListings && (
   <div className="modal-backdrop" onClick={() => setShowMyListings(false)}>
     <div className="modal" onClick={(event) => event.stopPropagation()}>
