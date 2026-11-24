@@ -1802,11 +1802,11 @@ setNotice("Meldingen zijn ingeschakeld.");
           <label>Straat</label>
           <input value={settingsStreet} onChange={(event) => setSettingsStreet(event.target.value)} placeholder="Straat" />
 
-          <label>Postcode</label>
-          <input value={settingsPostcode} onChange={(event) => setSettingsPostcode(event.target.value)} placeholder="Postcode" />
-
           <label>Stad</label>
           <input value={settingsCity} onChange={(event) => setSettingsCity(event.target.value)} placeholder="Stad" />
+
+          <label>Postcode</label>
+          <input value={settingsPostcode} onChange={(event) => setSettingsPostcode(event.target.value)} placeholder="Postcode" />
 
           <label>Telefoonnummer</label>
           <input type="tel" value={settingsPhone} onChange={(event) => setSettingsPhone(event.target.value)} placeholder="Telefoonnummer" />
