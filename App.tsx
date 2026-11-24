@@ -92,6 +92,7 @@ const [settingsPhone, setSettingsPhone] = useState("");
 const [settingsPostcode, setSettingsPostcode] = useState("");
 const [newPassword, setNewPassword] = useState("");
 const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [currentPassword, setCurrentPassword] = useState("");
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Alles");
@@ -353,42 +354,44 @@ async function handleLogout() {
   await supabase.auth.signOut();
   setNotice("Je bent uitgelogd.");
 }
-  async function saveSettings() {
-  if (!supabase || !user) return;
+  
+async function changePassword() {
+  if (!supabase || !user || !user.email) return;
 
-  const { error } = await supabase
-    .from("profiles")
-    .upsert({
-      user_id: user.id,
-      display_name: settingsName,
-      city: settingsCity,
-      street: settingsStreet,
-postcode: settingsPostcode,
-      phone: settingsPhone,
-      notifications_enabled: notificationsEnabled,
-    })
-    
+  if (!currentPassword.trim() || !newPassword.trim()) {
+    setNotice("Vul beide wachtwoordvelden in.");
+    return;
+  }
+
+  if (newPassword.length < 6) {
+    setNotice("Het nieuwe wachtwoord moet minimaal 6 tekens bevatten.");
+    return;
+  }
+
+  const { error: verifyError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: currentPassword,
+  });
+
+  if (verifyError) {
+    setNotice("Het huidige wachtwoord is onjuist.");
+    return;
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
 
   if (error) {
     setNotice(error.message);
     return;
   }
 
-  if (newPassword.trim()) {
-    const { error: passwordError } = await supabase.auth.updateUser({
-      password: newPassword,
-    });
-
-    if (passwordError) {
-      setNotice(passwordError.message);
-      return;
-    }
-  }
-
-  setNotice("Instellingen opgeslagen.");
+  setCurrentPassword("");
   setNewPassword("");
-  await loadData();
-  }
+  setNotice("Je wachtwoord is gewijzigd.");
+}
+  
   async function createListing() {
     if (!supabase || !user) {
       setShowLogin(true);
