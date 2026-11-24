@@ -685,9 +685,24 @@ if (notificationError) {
       return;
     }
 
+    if (status === "accepted") {
+      const { error: messageError } = await supabase.from("messages").insert({
+        listing_id: offer.listing_id,
+        sender_id: user.id,
+        receiver_id: offer.user_id,
+        body: "Je aanbod is geaccepteerd. We kunnen hier verder chatten.",
+      });
+
+      if (messageError) {
+        setNotice("Aanbod geaccepteerd, maar het gesprek kon niet worden gestart: " + messageError.message);
+        await loadData();
+        return;
+      }
+    }
+
     setNotice(
       status === "accepted"
-        ? "Aanbod geaccepteerd."
+        ? "Aanbod geaccepteerd. Het gesprek staat nu bij Berichten."
         : "Aanbod afgewezen."
     );
 
@@ -1151,21 +1166,7 @@ setNotice("Meldingen zijn ingeschakeld.");
               </div>
             )}
 
-            {user && offers.some((offer) => offer.listing_id === selectedListing.id && offer.status === "accepted") && (
-              <div className="chat-area">
-                <h3><MessageCircle size={18} /> Berichten</h3>
-                {messages.filter((message) => message.listing_id === selectedListing.id).map((message) => (
-                  <div className="chat-message" key={message.id}>
-                    <small>{message.sender_id === user.id ? "Jij" : "Andere gebruiker"}</small>
-                    <p>{message.body}</p>
-                  </div>
-                ))}
-                <textarea value={chatText} onChange={(event) => setChatText(event.target.value)} placeholder="Schrijf een bericht..." />
-                <button className="primary-btn full-btn" onClick={sendMessage}>
-                  <Send size={16} /> Verstuur
-                </button>
-              </div>
-            )}
+
           </div>
         </div>
       )}
