@@ -11,6 +11,8 @@ create table if not exists public.listings (
   created_at timestamptz not null default now()
 );
 
+alter table public.listings add column if not exists postcode text;
+
 alter table public.listings enable row level security;
 
 drop policy if exists "Anyone can view listings" on public.listings;
