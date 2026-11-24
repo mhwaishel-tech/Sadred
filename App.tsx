@@ -81,7 +81,7 @@ export default function App() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
+  
 const [showMyListings, setShowMyListings] = useState(false);
 const [showMyReviews, setShowMyReviews] = useState(false);
 const [showSettings, setShowSettings] = useState(false);
