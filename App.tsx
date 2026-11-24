@@ -25,6 +25,7 @@ type Listing = {
   description: string;
   category: string;
   city: string;
+  postcode?: string | null;
   reward_eur: number;
   image_urls?: string[] | null;
   status: string;
@@ -126,6 +127,7 @@ const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [city, setCity] = useState("");
+  const [listingPostcode, setListingPostcode] = useState("");
   const [reward, setReward] = useState("");
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [editImageUrls, setEditImageUrls] = useState<string[]>([]);
@@ -433,6 +435,7 @@ async function changePassword() {
       description: description.trim(),
       category: newCategory,
       city: city.trim(),
+      postcode: listingPostcode.trim(),
       reward_eur: Number(reward),
       status: "active",
       image_urls: imageUrls,
@@ -446,6 +449,7 @@ async function changePassword() {
     setTitle("");
     setDescription("");
     setCity("");
+    setListingPostcode("");
     setReward("");
     setSelectedImages([]);
     setShowCreate(false);
@@ -526,6 +530,7 @@ async function changePassword() {
         description: description.trim(),
         category: newCategory,
         city: city.trim(),
+        postcode: listingPostcode.trim(),
         reward_eur: Number(reward),
         image_urls: imageUrls,
       })
@@ -560,6 +565,7 @@ setSelectedListing({
   description: description.trim(),
   category: newCategory,
   city: city.trim(),
+  postcode: listingPostcode.trim(),
   reward_eur: Number(reward),
   image_urls: imageUrls,
 });
@@ -1047,6 +1053,7 @@ setNotice("Meldingen zijn ingeschakeld.");
       setTitle(selectedListing.title);
       setDescription(selectedListing.description);
       setCity(selectedListing.city);
+      setListingPostcode(selectedListing.postcode ?? "");
       setReward(String(selectedListing.reward_eur));
       setNewCategory(selectedListing.category);
       setSelectedImages([]);
@@ -1708,6 +1715,9 @@ setNotice("Meldingen zijn ingeschakeld.");
             <label>Stad</label>
             <input value={city} onChange={(event) => setCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
 
+            <label>Postcode</label>
+            <input value={listingPostcode} onChange={(event) => setListingPostcode(event.target.value)} placeholder="Bijvoorbeeld 2170" />
+
             <label>Beloning in euro</label>
             <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} placeholder="50" />
 
@@ -1886,6 +1896,9 @@ setNotice("Meldingen zijn ingeschakeld.");
 
       <label>Stad</label>
       <input value={city} onChange={(event) => setCity(event.target.value)} />
+
+      <label>Postcode</label>
+      <input value={listingPostcode} onChange={(event) => setListingPostcode(event.target.value)} placeholder="Bijvoorbeeld 2170" />
 
       <label>Beloning in euro</label>
       <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} />
