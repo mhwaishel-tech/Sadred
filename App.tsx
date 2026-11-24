@@ -753,10 +753,24 @@ setNotice("Bericht verzonden.");
     );
   });
 
-  function openListing(listing: Listing) {
-    setSelectedListing(listing);
-    setShowOffer(false);
+  // Keep top-level sections mutually exclusive so dialogs never stack.
+  function closeNavigationViews() {
+    setShowNotifications(false);
+    setShowInbox(false);
     setShowChat(false);
+    setShowMenu(false);
+    setShowMyListings(false);
+    setShowMyReviews(false);
+    setShowSettings(false);
+    setShowCreate(false);
+    setShowEdit(false);
+    setShowOffer(false);
+    setSelectedListing(null);
+  }
+
+  function openListing(listing: Listing) {
+    closeNavigationViews();
+    setSelectedListing(listing);
   }
 
   function closeDetails() {
@@ -785,7 +799,14 @@ setNotice("Bericht verzonden.");
 }}>
   <button
     className="secondary-btn"
-    onClick={() => user ? setShowInbox(true) : setShowLogin(true)}
+    onClick={() => {
+      if (!user) {
+        setShowLogin(true);
+        return;
+      }
+      closeNavigationViews();
+      setShowInbox(true);
+    }}
     style={{ width: "52px", height: "52px", borderRadius: "50%", position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
     <MessageCircle size={22} />
     {user && messages.filter((m) => m.receiver_id === user.id && !m.is_read).length > 0 && (
@@ -812,7 +833,11 @@ setNotice("Bericht verzonden.");
 
   <button
     className="secondary-btn"
-    onClick={() => user && setShowNotifications(true)}
+    onClick={() => {
+      if (!user) return;
+      closeNavigationViews();
+      setShowNotifications(true);
+    }}
 style={{ width: "52px", height: "52px", borderRadius: "50%", position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
     <Bell size={22} />
     {notifications.filter((n) => !n.is_read).length > 0 && (
@@ -850,7 +875,10 @@ style={{ width: "52px", height: "52px", borderRadius: "50%", position: "relative
   boxShadow: "none",
   zIndex: 10000
 }}
-  onClick={() => setShowMenu(!showMenu)}
+  onClick={() => {
+    if (!showMenu) closeNavigationViews();
+    setShowMenu(!showMenu);
+  }}
   aria-label="Menu"
   
 >
@@ -860,13 +888,13 @@ style={{ width: "52px", height: "52px", borderRadius: "50%", position: "relative
         {showMenu && (
   <div className="menu-dropdown">
     
-    <button onClick={() => { setShowMenu(false); setShowMyListings(true); }}>
+    <button onClick={() => { closeNavigationViews(); setShowMyListings(true); }}>
       Mijn opdrachten
     </button>
-    <button onClick={() => { setShowMenu(false); setShowMyReviews(true); }}>
+    <button onClick={() => { closeNavigationViews(); setShowMyReviews(true); }}>
       Mijn beoordelingen
     </button>
-    <button onClick={() => { setShowMenu(false); setShowSettings(true); }}>
+    <button onClick={() => { closeNavigationViews(); setShowSettings(true); }}>
       Instellingen
     </button>
 <button onClick={async () => {
@@ -924,7 +952,14 @@ setNotice("Meldingen zijn ingeschakeld.");
           </p>
           <button
             className="primary-btn"
-            onClick={() => (user ? setShowCreate(true) : setShowLogin(true))}
+            onClick={() => {
+              if (!user) {
+                setShowLogin(true);
+                return;
+              }
+              closeNavigationViews();
+              setShowCreate(true);
+            }}
           >
             Plaats een opdracht <Plus size={18} />
           </button>
