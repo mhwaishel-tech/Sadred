@@ -1784,7 +1784,8 @@ setNotice("Meldingen zijn ingeschakeld.");
     </div>
   </div>
 )}     
-      {showSettings && (
+      
+{showSettings && (
   <div className="modal-backdrop" onClick={() => setShowSettings(false)}>
     <div className="modal" onClick={(event) => event.stopPropagation()}>
       <button className="close-btn" onClick={() => setShowSettings(false)}>
@@ -1793,11 +1794,27 @@ setNotice("Meldingen zijn ingeschakeld.");
 
       <h2>Instellingen</h2>
 
+      <h3>Mijn profiel</h3>
+
       <label>Naam</label>
       <input
         value={settingsName}
         onChange={(event) => setSettingsName(event.target.value)}
         placeholder="Naam"
+      />
+
+      <label>Straat</label>
+      <input
+        value={settingsStreet}
+        onChange={(event) => setSettingsStreet(event.target.value)}
+        placeholder="Straat"
+      />
+
+      <label>Postcode</label>
+      <input
+        value={settingsPostcode}
+        onChange={(event) => setSettingsPostcode(event.target.value)}
+        placeholder="Postcode"
       />
 
       <label>Stad</label>
@@ -1815,14 +1832,9 @@ setNotice("Meldingen zijn ingeschakeld.");
         placeholder="Telefoonnummer"
       />
 
-      <label>Nieuw wachtwoord</label>
-      <input
-        type="password"
-        value={newPassword}
-        onChange={(event) => setNewPassword(event.target.value)}
-        placeholder="Nieuw wachtwoord"
-      />
+      <hr />
 
+      <h3>Meldingen</h3>
       <label>
         <input
           type="checkbox"
@@ -1835,9 +1847,34 @@ setNotice("Meldingen zijn ingeschakeld.");
       <button className="primary-btn full-btn" onClick={saveSettings}>
         Instellingen opslaan
       </button>
+
+      <hr />
+
+      <h3>Wachtwoord opnieuw instellen</h3>
+
+      <label>Oud wachtwoord</label>
+      <input
+        type="password"
+        value={currentPassword}
+        onChange={(event) => setCurrentPassword(event.target.value)}
+        placeholder="Oud wachtwoord"
+      />
+
+      <label>Nieuw wachtwoord</label>
+      <input
+        type="password"
+        value={newPassword}
+        onChange={(event) => setNewPassword(event.target.value)}
+        placeholder="Nieuw wachtwoord"
+      />
+
+      <button className="primary-btn full-btn" onClick={changePassword}>
+        Wachtwoord wijzigen
+      </button>
     </div>
   </div>
 )}
+      
 {showEdit && selectedListing && (
   <div className="modal-backdrop" onClick={() => setShowEdit(false)}>
     <div className="modal" onClick={(event) => event.stopPropagation()}>
