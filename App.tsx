@@ -979,8 +979,6 @@ setNotice("Meldingen zijn ingeschakeld.");
 )}
                 <div className="listing-card-content">
                   <span className="listing-category">{listing.category}</span>
-                  <h3>{listing.title}</h3>
-                  <p>{listing.description}</p>
                   <div className="listing-meta">
                     <span><MapPin size={15} /> {listing.city}</span>
                     <strong><Euro size={15} /> {listing.reward_eur}</strong>
