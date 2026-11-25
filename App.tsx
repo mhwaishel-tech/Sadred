@@ -615,7 +615,6 @@ setSelectedListing({
   }
 
   const marker = "/storage/v1/object/public/listing-images/";
-
   const paths = (selectedListing.image_urls ?? [])
     .map((url) => {
       const index = url.indexOf(marker);
@@ -624,20 +623,8 @@ setSelectedListing({
     })
     .filter((path): path is string => Boolean(path));
 
-  let storageWarning = false;
-
-  if (paths.length > 0) {
-    const { error: storageError } = await supabase.storage
-      .from("listing-images")
-      .remove(paths);
-
-    // A storage cleanup problem must not prevent deleting the listing itself.
-    if (storageError) {
-      storageWarning = true;
-      console.error("Listing image cleanup failed:", storageError);
-    }
-  }
-
+  // Delete the listing first. If the database rejects it (for example,
+  // because related offers still exist), the listing images remain intact.
   const { data, error } = await supabase
     .from("listings")
     .delete()
@@ -652,11 +639,22 @@ setSelectedListing({
   }
 
   setSelectedListing(null);
-  setNotice(storageWarning
-    ? "Opdracht verwijderd. Een of meer foto's konden niet worden verwijderd."
-    : "Opdracht verwijderd.");
   await loadData();
+
+  if (paths.length > 0) {
+    const { error: storageError } = await supabase.storage
+      .from("listing-images")
+      .remove(paths);
+
+    if (storageError) {
+      console.error("Listing image cleanup failed:", storageError);
+      setNotice("Opdracht verwijderd. Een of meer foto's konden niet worden verwijderd.");
+      return;
+    }
   }
+
+  setNotice("Opdracht verwijderd.");
+}
   async function submitOffer() {
     if (!supabase || !user || !selectedListing) {
       setShowLogin(true);
