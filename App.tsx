@@ -1790,18 +1790,18 @@ setNotice("Meldingen zijn ingeschakeld.");
             {newCategory === "Verhuizen" ? (
               <>
                 <h3>Van (ophaaladres)</h3>
-                <label>Stad</label>
+                <label style={{ fontWeight: 400 }}>Stad</label>
                 <input value={fromCity} onChange={(event) => setFromCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
-                <label>Postcode</label>
+                <label style={{ fontWeight: 700 }}>Postcode</label>
                 <input value={fromPostcode} onChange={(event) => setFromPostcode(event.target.value)} placeholder="Bijvoorbeeld 2170" />
-                <label>Straat en huisnummer</label>
+                <label style={{ fontWeight: 700 }}>Straat en huisnummer</label>
                 <input value={fromStreet} onChange={(event) => setFromStreet(event.target.value)} placeholder="Straatnaam en huisnummer" />
                 <h3>Naar (afleveradres)</h3>
-                <label>Stad</label>
+                <label style={{ fontWeight: 400 }}>Stad</label>
                 <input value={toCity} onChange={(event) => setToCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
-                <label>Postcode</label>
+                <label style={{ fontWeight: 700 }}>Postcode</label>
                 <input value={toPostcode} onChange={(event) => setToPostcode(event.target.value)} placeholder="Bijvoorbeeld 2000" />
-                <label>Straat en huisnummer</label>
+                <label style={{ fontWeight: 700 }}>Straat en huisnummer</label>
                 <input value={toStreet} onChange={(event) => setToStreet(event.target.value)} placeholder="Straatnaam en huisnummer" />
               </>
             ) : (
@@ -1992,18 +1992,18 @@ setNotice("Meldingen zijn ingeschakeld.");
       {newCategory === "Verhuizen" ? (
         <>
           <h3>Van (ophaaladres)</h3>
-          <label>Stad</label>
+          <label style={{ fontWeight: 400 }}>Stad</label>
           <input value={fromCity} onChange={(event) => setFromCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
-          <label>Postcode</label>
+          <label style={{ fontWeight: 700 }}>Postcode</label>
           <input value={fromPostcode} onChange={(event) => setFromPostcode(event.target.value)} placeholder="Bijvoorbeeld 2170" />
-          <label>Straat en huisnummer</label>
+          <label style={{ fontWeight: 700 }}>Straat en huisnummer</label>
           <input value={fromStreet} onChange={(event) => setFromStreet(event.target.value)} placeholder="Straatnaam en huisnummer" />
           <h3>Naar (afleveradres)</h3>
-          <label>Stad</label>
+          <label style={{ fontWeight: 400 }}>Stad</label>
           <input value={toCity} onChange={(event) => setToCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
-          <label>Postcode</label>
+          <label style={{ fontWeight: 700 }}>Postcode</label>
           <input value={toPostcode} onChange={(event) => setToPostcode(event.target.value)} placeholder="Bijvoorbeeld 2000" />
-          <label>Straat en huisnummer</label>
+          <label style={{ fontWeight: 700 }}>Straat en huisnummer</label>
           <input value={toStreet} onChange={(event) => setToStreet(event.target.value)} placeholder="Straatnaam en huisnummer" />
         </>
       ) : (
