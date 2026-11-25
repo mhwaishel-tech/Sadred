@@ -624,14 +624,17 @@ setSelectedListing({
     })
     .filter((path): path is string => Boolean(path));
 
+  let storageWarning = false;
+
   if (paths.length > 0) {
     const { error: storageError } = await supabase.storage
       .from("listing-images")
       .remove(paths);
 
+    // A storage cleanup problem must not prevent deleting the listing itself.
     if (storageError) {
-      setNotice(storageError.message);
-      return;
+      storageWarning = true;
+      console.error("Listing image cleanup failed:", storageError);
     }
   }
 
@@ -649,7 +652,9 @@ setSelectedListing({
   }
 
   setSelectedListing(null);
-  setNotice("Opdracht verwijderd.");
+  setNotice(storageWarning
+    ? "Opdracht verwijderd. Een of meer foto's konden niet worden verwijderd."
+    : "Opdracht verwijderd.");
   await loadData();
   }
   async function submitOffer() {
