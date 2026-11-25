@@ -12,6 +12,12 @@ create table if not exists public.listings (
 );
 
 alter table public.listings add column if not exists postcode text;
+alter table public.listings add column if not exists from_city text;
+alter table public.listings add column if not exists from_postcode text;
+alter table public.listings add column if not exists from_street text;
+alter table public.listings add column if not exists to_city text;
+alter table public.listings add column if not exists to_postcode text;
+alter table public.listings add column if not exists to_street text;
 
 alter table public.listings enable row level security;
 
