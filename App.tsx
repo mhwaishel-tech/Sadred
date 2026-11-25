@@ -1121,7 +1121,14 @@ setNotice("Meldingen zijn ingeschakeld.");
 </div>
 
             <p>{selectedListing.description}</p>
-            <p><MapPin size={16} /> {selectedListing.city}</p>
+            {selectedListing.category === "Verhuizen" ? (
+              <div className="moving-route-details">
+                <p><strong>Van:</strong> {selectedListing.from_street}, {selectedListing.from_postcode} {selectedListing.from_city}</p>
+                <p><strong>Naar:</strong> {selectedListing.to_street}, {selectedListing.to_postcode} {selectedListing.to_city}</p>
+              </div>
+            ) : (
+              <p><MapPin size={16} /> {selectedListing.city}</p>
+            )}
             <h3>€ {selectedListing.reward_eur}</h3>
 
             {user && selectedListing.user_id === user.id ? (
