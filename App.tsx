@@ -812,6 +812,8 @@ setNotice("Bericht verzonden.");
 }}>
   <button
     className="secondary-btn"
+    aria-label="Berichten"
+    title="Berichten"
     onClick={() => {
       if (!user) {
         setShowLogin(true);
@@ -821,7 +823,7 @@ setNotice("Bericht verzonden.");
       setShowInbox(true);
     }}
     style={{ width: "44px", height: "44px", borderRadius: "50%", position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,.16)", color: "#fff", border: "1px solid rgba(255,255,255,.45)" }}>
-    <MessageCircle size={22} />
+    <MessageCircle size={22} strokeWidth={2.4} style={{ width: "22px", height: "22px", minWidth: "22px", minHeight: "22px", display: "block" }} />
     {user && messages.filter((m) => m.receiver_id === user.id && !m.is_read).length > 0 && (
       <span style={{
   position: "absolute",
@@ -846,6 +848,8 @@ setNotice("Bericht verzonden.");
 
   <button
     className="secondary-btn"
+    aria-label="Meldingen"
+    title="Meldingen"
     onClick={() => {
       if (!user) return;
       closeNavigationViews();
