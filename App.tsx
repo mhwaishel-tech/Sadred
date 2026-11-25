@@ -905,29 +905,20 @@ style={{ width: "44px", height: "44px", minWidth: "44px", padding: 0, borderRadi
 </span>
   )}
   </button>
-</div>
 
-<button
-  style={{
-  position: "fixed",
-  top: "0",
-  left: "0",
-  margin: "0",
-  padding: "8px",
-  background: "transparent",
-  border: "none",
-  boxShadow: "none",
-  zIndex: 10000
-}}
-  onClick={() => {
-    if (!showMenu) closeNavigationViews();
-    setShowMenu(!showMenu);
-  }}
-  aria-label="Menu"
-  
->
-  <Menu size={22} />
-</button>
+  <button
+    className="secondary-btn"
+    aria-label="Menu"
+    title="Menu"
+    onClick={() => {
+      if (!showMenu) closeNavigationViews();
+      setShowMenu(!showMenu);
+    }}
+    style={{ width: "44px", height: "44px", minWidth: "44px", padding: 0, borderRadius: "50%", position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "transparent", color: "#000", border: "1px solid #000" }}
+  >
+    <Menu size={22} strokeWidth={2.4} style={{ width: "22px", height: "22px", minWidth: "22px", minHeight: "22px", display: "block" }} />
+  </button>
+</div>
         
         {showMenu && (
   <div className="menu-dropdown">
