@@ -803,8 +803,8 @@ setNotice("Bericht verzonden.");
 
 <div style={{
   position: "fixed",
-  right: "18px",
-  bottom: "20px",
+  right: "16px",
+  top: "8px",
   display: "flex",
   flexDirection: "row",
   gap: "12px",
@@ -820,7 +820,7 @@ setNotice("Bericht verzonden.");
       closeNavigationViews();
       setShowInbox(true);
     }}
-    style={{ width: "52px", height: "52px", borderRadius: "50%", position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+    style={{ width: "44px", height: "44px", borderRadius: "50%", position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,.16)", color: "#fff", border: "1px solid rgba(255,255,255,.45)" }}>
     <MessageCircle size={22} />
     {user && messages.filter((m) => m.receiver_id === user.id && !m.is_read).length > 0 && (
       <span style={{
