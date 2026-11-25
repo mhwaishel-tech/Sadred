@@ -1776,13 +1776,13 @@ setNotice("Meldingen zijn ingeschakeld.");
             <button className="close-btn" onClick={() => setShowCreate(false)}><X /></button>
             <h2>Nieuwe opdracht plaatsen</h2>
 
-            <label style={{ fontWeight: 700 }}>Titel</label>
+            <label style={{ fontWeight: 700, fontSize: "1.17em" }}>Titel</label>
             <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Wat moet er gebeuren?" />
 
-            <label style={{ fontWeight: 700 }}>Beschrijving</label>
+            <label style={{ fontWeight: 700, fontSize: "1.17em" }}>Beschrijving</label>
             <textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Geef meer informatie..." />
 
-            <label style={{ fontWeight: 700 }}>Categorie</label>
+            <label style={{ fontWeight: 700, fontSize: "1.17em" }}>Categorie</label>
             <select value={newCategory} onChange={(event) => setNewCategory(event.target.value)}>
               {categories.map((item) => <option key={item}>{item}</option>)}
             </select>
@@ -1813,10 +1813,10 @@ setNotice("Meldingen zijn ingeschakeld.");
               </>
             )}
 
-            <label style={{ fontWeight: 700 }}>Beloning in euro</label>
+            <label style={{ fontWeight: 700, fontSize: "1.17em" }}>Beloning in euro</label>
             <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} placeholder="50" />
 
-            <label style={{ fontWeight: 700 }}>Foto's toevoegen (maximaal 5)</label>
+            <label style={{ fontWeight: 700, fontSize: "1.17em" }}>Foto's toevoegen (maximaal 5)</label>
             <input
               type="file"
               accept="image/*"
@@ -1978,13 +1978,13 @@ setNotice("Meldingen zijn ingeschakeld.");
 
       <h2>Advertentie bewerken</h2>
 
-      <label style={{ fontWeight: 700 }}>Titel</label>
+      <label style={{ fontWeight: 700, fontSize: "1.17em" }}>Titel</label>
       <input value={title} onChange={(event) => setTitle(event.target.value)} />
 
-      <label style={{ fontWeight: 700 }}>Beschrijving</label>
+      <label style={{ fontWeight: 700, fontSize: "1.17em" }}>Beschrijving</label>
       <textarea value={description} onChange={(event) => setDescription(event.target.value)} />
 
-      <label style={{ fontWeight: 700 }}>Categorie</label>
+      <label style={{ fontWeight: 700, fontSize: "1.17em" }}>Categorie</label>
       <select value={newCategory} onChange={(event) => setNewCategory(event.target.value)}>
         {categories.map((item) => <option key={item}>{item}</option>)}
       </select>
@@ -2015,7 +2015,7 @@ setNotice("Meldingen zijn ingeschakeld.");
         </>
       )}
 
-      <label style={{ fontWeight: 700 }}>Beloning in euro</label>
+      <label style={{ fontWeight: 700, fontSize: "1.17em" }}>Beloning in euro</label>
       <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} />
 <div>
   <p>Huidige foto's: {editImageUrls.length}</p>
