@@ -1776,13 +1776,13 @@ setNotice("Meldingen zijn ingeschakeld.");
             <button className="close-btn" onClick={() => setShowCreate(false)}><X /></button>
             <h2>Nieuwe opdracht plaatsen</h2>
 
-            <label>Titel</label>
+            <label style={{ fontWeight: 700 }}>Titel</label>
             <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Wat moet er gebeuren?" />
 
-            <label>Beschrijving</label>
+            <label style={{ fontWeight: 700 }}>Beschrijving</label>
             <textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Geef meer informatie..." />
 
-            <label>Categorie</label>
+            <label style={{ fontWeight: 700 }}>Categorie</label>
             <select value={newCategory} onChange={(event) => setNewCategory(event.target.value)}>
               {categories.map((item) => <option key={item}>{item}</option>)}
             </select>
@@ -1792,16 +1792,16 @@ setNotice("Meldingen zijn ingeschakeld.");
                 <h3>Van (ophaaladres)</h3>
                 <label style={{ fontWeight: 400 }}>Stad</label>
                 <input value={fromCity} onChange={(event) => setFromCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
-                <label style={{ fontWeight: 700 }}>Postcode</label>
+                <label style={{ fontWeight: 400 }}>Postcode</label>
                 <input value={fromPostcode} onChange={(event) => setFromPostcode(event.target.value)} placeholder="Bijvoorbeeld 2170" />
-                <label style={{ fontWeight: 700 }}>Straat en huisnummer</label>
+                <label style={{ fontWeight: 400 }}>Straat en huisnummer</label>
                 <input value={fromStreet} onChange={(event) => setFromStreet(event.target.value)} placeholder="Straatnaam en huisnummer" />
                 <h3>Naar (afleveradres)</h3>
                 <label style={{ fontWeight: 400 }}>Stad</label>
                 <input value={toCity} onChange={(event) => setToCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
-                <label style={{ fontWeight: 700 }}>Postcode</label>
+                <label style={{ fontWeight: 400 }}>Postcode</label>
                 <input value={toPostcode} onChange={(event) => setToPostcode(event.target.value)} placeholder="Bijvoorbeeld 2000" />
-                <label style={{ fontWeight: 700 }}>Straat en huisnummer</label>
+                <label style={{ fontWeight: 400 }}>Straat en huisnummer</label>
                 <input value={toStreet} onChange={(event) => setToStreet(event.target.value)} placeholder="Straatnaam en huisnummer" />
               </>
             ) : (
@@ -1813,10 +1813,10 @@ setNotice("Meldingen zijn ingeschakeld.");
               </>
             )}
 
-            <label>Beloning in euro</label>
+            <label style={{ fontWeight: 700 }}>Beloning in euro</label>
             <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} placeholder="50" />
 
-            <label>Foto's toevoegen (maximaal 5)</label>
+            <label style={{ fontWeight: 700 }}>Foto's toevoegen (maximaal 5)</label>
             <input
               type="file"
               accept="image/*"
@@ -1978,13 +1978,13 @@ setNotice("Meldingen zijn ingeschakeld.");
 
       <h2>Advertentie bewerken</h2>
 
-      <label>Titel</label>
+      <label style={{ fontWeight: 700 }}>Titel</label>
       <input value={title} onChange={(event) => setTitle(event.target.value)} />
 
-      <label>Beschrijving</label>
+      <label style={{ fontWeight: 700 }}>Beschrijving</label>
       <textarea value={description} onChange={(event) => setDescription(event.target.value)} />
 
-      <label>Categorie</label>
+      <label style={{ fontWeight: 700 }}>Categorie</label>
       <select value={newCategory} onChange={(event) => setNewCategory(event.target.value)}>
         {categories.map((item) => <option key={item}>{item}</option>)}
       </select>
@@ -1994,16 +1994,16 @@ setNotice("Meldingen zijn ingeschakeld.");
           <h3>Van (ophaaladres)</h3>
           <label style={{ fontWeight: 400 }}>Stad</label>
           <input value={fromCity} onChange={(event) => setFromCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
-          <label style={{ fontWeight: 700 }}>Postcode</label>
+          <label style={{ fontWeight: 400 }}>Postcode</label>
           <input value={fromPostcode} onChange={(event) => setFromPostcode(event.target.value)} placeholder="Bijvoorbeeld 2170" />
-          <label style={{ fontWeight: 700 }}>Straat en huisnummer</label>
+          <label style={{ fontWeight: 400 }}>Straat en huisnummer</label>
           <input value={fromStreet} onChange={(event) => setFromStreet(event.target.value)} placeholder="Straatnaam en huisnummer" />
           <h3>Naar (afleveradres)</h3>
           <label style={{ fontWeight: 400 }}>Stad</label>
           <input value={toCity} onChange={(event) => setToCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
-          <label style={{ fontWeight: 700 }}>Postcode</label>
+          <label style={{ fontWeight: 400 }}>Postcode</label>
           <input value={toPostcode} onChange={(event) => setToPostcode(event.target.value)} placeholder="Bijvoorbeeld 2000" />
-          <label style={{ fontWeight: 700 }}>Straat en huisnummer</label>
+          <label style={{ fontWeight: 400 }}>Straat en huisnummer</label>
           <input value={toStreet} onChange={(event) => setToStreet(event.target.value)} placeholder="Straatnaam en huisnummer" />
         </>
       ) : (
@@ -2015,7 +2015,7 @@ setNotice("Meldingen zijn ingeschakeld.");
         </>
       )}
 
-      <label>Beloning in euro</label>
+      <label style={{ fontWeight: 700 }}>Beloning in euro</label>
       <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} />
 <div>
   <p>Huidige foto's: {editImageUrls.length}</p>
