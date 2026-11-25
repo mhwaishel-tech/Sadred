@@ -957,7 +957,7 @@ setNotice("Meldingen zijn ingeschakeld.");
 
       <section className="hero">
         <div className="hero-content">
-          <div className="hero-brand"><Recycle size={34} /> <span>Sad Rad</span></div>
+          <div className="hero-brand"><Recycle size={34} /> <span>SDRD</span></div>
           <div className="eyebrow">SAMEN MAKEN WE RUIMTE</div>
           <h1>Een klus gedaan.<br />Een ander geholpen.</h1>
           <p>
