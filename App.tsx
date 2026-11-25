@@ -26,6 +26,12 @@ type Listing = {
   category: string;
   city: string;
   postcode?: string | null;
+  from_city?: string | null;
+  from_postcode?: string | null;
+  from_street?: string | null;
+  to_city?: string | null;
+  to_postcode?: string | null;
+  to_street?: string | null;
   reward_eur: number;
   image_urls?: string[] | null;
   status: string;
@@ -128,6 +134,12 @@ const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [description, setDescription] = useState("");
   const [city, setCity] = useState("");
   const [listingPostcode, setListingPostcode] = useState("");
+  const [fromCity, setFromCity] = useState("");
+  const [fromPostcode, setFromPostcode] = useState("");
+  const [fromStreet, setFromStreet] = useState("");
+  const [toCity, setToCity] = useState("");
+  const [toPostcode, setToPostcode] = useState("");
+  const [toStreet, setToStreet] = useState("");
   const [reward, setReward] = useState("");
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [editImageUrls, setEditImageUrls] = useState<string[]>([]);
@@ -401,7 +413,10 @@ async function changePassword() {
       return;
     }
 
-    if (!title.trim() || !city.trim() || !reward) {
+    const isMoving = newCategory === "Verhuizen";
+    if (!title.trim() || !reward || (isMoving
+      ? !fromCity.trim() || !fromPostcode.trim() || !fromStreet.trim() || !toCity.trim() || !toPostcode.trim() || !toStreet.trim()
+      : !city.trim())) {
       setNotice("Vul alle verplichte velden in.");
       return;
     }
@@ -434,8 +449,9 @@ async function changePassword() {
       title: title.trim(),
       description: description.trim(),
       category: newCategory,
-      city: city.trim(),
-      postcode: listingPostcode.trim(),
+      city: isMoving ? toCity.trim() : city.trim(),
+      postcode: isMoving ? toPostcode.trim() : listingPostcode.trim(),
+      ...(isMoving ? { from_city: fromCity.trim(), from_postcode: fromPostcode.trim(), from_street: fromStreet.trim(), to_city: toCity.trim(), to_postcode: toPostcode.trim(), to_street: toStreet.trim() } : {}),
       reward_eur: Number(reward),
       status: "active",
       image_urls: imageUrls,
@@ -450,6 +466,8 @@ async function changePassword() {
     setDescription("");
     setCity("");
     setListingPostcode("");
+    setFromCity(""); setFromPostcode(""); setFromStreet("");
+    setToCity(""); setToPostcode(""); setToStreet("");
     setReward("");
     setSelectedImages([]);
     setShowCreate(false);
@@ -490,7 +508,10 @@ async function changePassword() {
       return;
     }
 
-    if (!title.trim() || !city.trim() || !reward) {
+    const isMoving = newCategory === "Verhuizen";
+    if (!title.trim() || !reward || (isMoving
+      ? !fromCity.trim() || !fromPostcode.trim() || !fromStreet.trim() || !toCity.trim() || !toPostcode.trim() || !toStreet.trim()
+      : !city.trim())) {
       setNotice("Vul alle verplichte velden in.");
       return;
     }
@@ -529,8 +550,14 @@ async function changePassword() {
         title: title.trim(),
         description: description.trim(),
         category: newCategory,
-        city: city.trim(),
-        postcode: listingPostcode.trim(),
+        city: isMoving ? toCity.trim() : city.trim(),
+        postcode: isMoving ? toPostcode.trim() : listingPostcode.trim(),
+        from_city: isMoving ? fromCity.trim() : null,
+        from_postcode: isMoving ? fromPostcode.trim() : null,
+        from_street: isMoving ? fromStreet.trim() : null,
+        to_city: isMoving ? toCity.trim() : null,
+        to_postcode: isMoving ? toPostcode.trim() : null,
+        to_street: isMoving ? toStreet.trim() : null,
         reward_eur: Number(reward),
         image_urls: imageUrls,
       })
@@ -1107,6 +1134,8 @@ setNotice("Meldingen zijn ingeschakeld.");
       setDescription(selectedListing.description);
       setCity(selectedListing.city);
       setListingPostcode(selectedListing.postcode ?? "");
+      setFromCity(selectedListing.from_city ?? ""); setFromPostcode(selectedListing.from_postcode ?? ""); setFromStreet(selectedListing.from_street ?? "");
+      setToCity(selectedListing.to_city ?? ""); setToPostcode(selectedListing.to_postcode ?? ""); setToStreet(selectedListing.to_street ?? "");
       setReward(String(selectedListing.reward_eur));
       setNewCategory(selectedListing.category);
       setSelectedImages([]);
@@ -1751,11 +1780,31 @@ setNotice("Meldingen zijn ingeschakeld.");
               {categories.map((item) => <option key={item}>{item}</option>)}
             </select>
 
-            <label>Stad</label>
-            <input value={city} onChange={(event) => setCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
-
-            <label>Postcode</label>
-            <input value={listingPostcode} onChange={(event) => setListingPostcode(event.target.value)} placeholder="Bijvoorbeeld 2170" />
+            {newCategory === "Verhuizen" ? (
+              <>
+                <h3>Van (ophaaladres)</h3>
+                <label>Stad</label>
+                <input value={fromCity} onChange={(event) => setFromCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
+                <label>Postcode</label>
+                <input value={fromPostcode} onChange={(event) => setFromPostcode(event.target.value)} placeholder="Bijvoorbeeld 2170" />
+                <label>Straat en huisnummer</label>
+                <input value={fromStreet} onChange={(event) => setFromStreet(event.target.value)} placeholder="Straatnaam en huisnummer" />
+                <h3>Naar (afleveradres)</h3>
+                <label>Stad</label>
+                <input value={toCity} onChange={(event) => setToCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
+                <label>Postcode</label>
+                <input value={toPostcode} onChange={(event) => setToPostcode(event.target.value)} placeholder="Bijvoorbeeld 2000" />
+                <label>Straat en huisnummer</label>
+                <input value={toStreet} onChange={(event) => setToStreet(event.target.value)} placeholder="Straatnaam en huisnummer" />
+              </>
+            ) : (
+              <>
+                <label>Stad</label>
+                <input value={city} onChange={(event) => setCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
+                <label>Postcode</label>
+                <input value={listingPostcode} onChange={(event) => setListingPostcode(event.target.value)} placeholder="Bijvoorbeeld 2170" />
+              </>
+            )}
 
             <label>Beloning in euro</label>
             <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} placeholder="50" />
@@ -1933,11 +1982,31 @@ setNotice("Meldingen zijn ingeschakeld.");
         {categories.map((item) => <option key={item}>{item}</option>)}
       </select>
 
-      <label>Stad</label>
-      <input value={city} onChange={(event) => setCity(event.target.value)} />
-
-      <label>Postcode</label>
-      <input value={listingPostcode} onChange={(event) => setListingPostcode(event.target.value)} placeholder="Bijvoorbeeld 2170" />
+      {newCategory === "Verhuizen" ? (
+        <>
+          <h3>Van (ophaaladres)</h3>
+          <label>Stad</label>
+          <input value={fromCity} onChange={(event) => setFromCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
+          <label>Postcode</label>
+          <input value={fromPostcode} onChange={(event) => setFromPostcode(event.target.value)} placeholder="Bijvoorbeeld 2170" />
+          <label>Straat en huisnummer</label>
+          <input value={fromStreet} onChange={(event) => setFromStreet(event.target.value)} placeholder="Straatnaam en huisnummer" />
+          <h3>Naar (afleveradres)</h3>
+          <label>Stad</label>
+          <input value={toCity} onChange={(event) => setToCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
+          <label>Postcode</label>
+          <input value={toPostcode} onChange={(event) => setToPostcode(event.target.value)} placeholder="Bijvoorbeeld 2000" />
+          <label>Straat en huisnummer</label>
+          <input value={toStreet} onChange={(event) => setToStreet(event.target.value)} placeholder="Straatnaam en huisnummer" />
+        </>
+      ) : (
+        <>
+          <label>Stad</label>
+          <input value={city} onChange={(event) => setCity(event.target.value)} placeholder="Bijvoorbeeld Antwerpen" />
+          <label>Postcode</label>
+          <input value={listingPostcode} onChange={(event) => setListingPostcode(event.target.value)} placeholder="Bijvoorbeeld 2170" />
+        </>
+      )}
 
       <label>Beloning in euro</label>
       <input type="number" value={reward} onChange={(event) => setReward(event.target.value)} />
