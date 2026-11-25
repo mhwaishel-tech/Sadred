@@ -98,8 +98,8 @@ button{cursor:pointer;touch-action:manipulation;pointer-events:auto}
 .empty-state{text-align:center;padding:35px;color:#71847a}
 .how{background:#eef5ef;padding:55px 8%}
 .how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.modal-backdrop{position:fixed;inset:0;z-index:1000;background:#102a22aa;display:flex;align-items:center;justify-content:center;padding:15px;overflow-y:auto;pointer-events:auto}
-.modal{position:relative;z-index:1001;background:white;border-radius:16px;padding:28px;width:min(100%,480px);max-height:90vh;overflow-y:auto;pointer-events:auto}
+.modal-backdrop{position:fixed;inset:0;z-index:20001;background:#102a22aa;display:flex;align-items:center;justify-content:center;padding:15px;overflow-y:auto;pointer-events:auto}
+.modal{position:relative;z-index:20002;background:white;border-radius:16px;padding:28px;width:min(100%,480px);max-height:90vh;overflow-y:auto;pointer-events:auto}
 .modal h2{margin-top:0}
 .modal label{display:block;margin:13px 0 7px;font-weight:bold;font-size:13px}
 .modal input,.modal textarea,.modal select{display:block;width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px;font-size:15px}
