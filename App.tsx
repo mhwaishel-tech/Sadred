@@ -851,7 +851,7 @@ setNotice("Bericht verzonden.");
       closeNavigationViews();
       setShowNotifications(true);
     }}
-style={{ width: "52px", height: "52px", borderRadius: "50%", position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+style={{ width: "44px", height: "44px", borderRadius: "50%", position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,.16)", color: "#fff", border: "1px solid rgba(255,255,255,.45)" }}>
     <Bell size={22} />
     {notifications.filter((n) => !n.is_read).length > 0 && (
       <span style={{
