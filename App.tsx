@@ -796,7 +796,6 @@ setNotice("Bericht verzonden.");
     return (
     <main className="app">
       <header className="header">
-        <a href="#" className="logo" aria-label="Sad Rad home"><Recycle size={25} /> <span>Sad Rad</span></a>
         <nav>
           <a href="#opdrachten">Opdrachten</a>
           <a href="#hoe-werkt-het">Hoe werkt het?</a>
@@ -957,8 +956,8 @@ setNotice("Meldingen zijn ingeschakeld.");
       )}
 
       <section className="hero">
-        <div className="hero-watermark" aria-hidden="true">Sad Rad</div>
         <div className="hero-content">
+          <div className="hero-brand"><Recycle size={34} /> <span>Sad Rad</span></div>
           <div className="eyebrow">SAMEN MAKEN WE RUIMTE</div>
           <h1>Een klus gedaan.<br />Een ander geholpen.</h1>
           <p>
