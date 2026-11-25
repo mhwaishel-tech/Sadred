@@ -14,7 +14,7 @@ import {
   MessageCircle,
   Star,
   Package,
-  User, Bell, EllipsisVertical,
+  User, Bell, Menu,
 } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "./supabase";
 
@@ -926,7 +926,7 @@ style={{ width: "44px", height: "44px", minWidth: "44px", padding: 0, borderRadi
   aria-label="Menu"
   
 >
-  <EllipsisVertical size={22} />
+  <Menu size={22} />
 </button>
         
         {showMenu && (
