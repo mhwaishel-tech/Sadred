@@ -855,8 +855,8 @@ setNotice("Bericht verzonden.");
       closeNavigationViews();
       setShowNotifications(true);
     }}
-style={{ width: "44px", height: "44px", borderRadius: "50%", position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,.16)", color: "#fff", border: "1px solid rgba(255,255,255,.45)" }}>
-    <Bell size={22} />
+style={{ width: "44px", height: "44px", minWidth: "44px", padding: 0, borderRadius: "50%", position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,.16)", color: "#fff", border: "1px solid rgba(255,255,255,.45)" }}>
+    <Bell size={22} strokeWidth={2.4} style={{ width: "22px", height: "22px", minWidth: "22px", minHeight: "22px", display: "block" }} />
     {notifications.filter((n) => !n.is_read).length > 0 && (
       <span style={{
   position: "absolute",
